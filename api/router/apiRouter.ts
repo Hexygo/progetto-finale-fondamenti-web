@@ -1,7 +1,9 @@
-import { Router } from "express"
+import express, { Router } from "express"
 
 const router=Router()
 const usersRouter=require('./usersRouter')
+
+router.use(express.json())
 
 //Endpoint root dell'API
 router.get('/', (req, res)=>{

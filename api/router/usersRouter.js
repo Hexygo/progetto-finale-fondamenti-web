@@ -7,5 +7,7 @@ const usersController = require('../controllers/usersController');
 router.get('/all', usersController.getAllUsers);
 //Endpoint "username" dell'API "users"
 router.get('/username/:username', usersController.getUserByUsername);
+//Endpoint "register" dell'API "users", accetta richieste POST
+router.post('/register', usersController.addUser);
 module.exports = router;
 //# sourceMappingURL=usersRouter.js.map
