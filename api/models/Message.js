@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const messageSchema = new mongoose_1.default.Schema({
     sender: mongoose_1.default.Types.ObjectId,
-    reciever: mongoose_1.default.Types.ObjectId,
+    receiver: mongoose_1.default.Types.ObjectId,
     content: String,
     time: Date
 });
