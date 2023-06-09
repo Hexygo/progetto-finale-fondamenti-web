@@ -27,6 +27,11 @@ module.exports = {
     getConversation: (req, res) => {
         Message.find({ $or: [{ sender: req.body.user, receiver: req.body.otherUser }, { sender: req.body.otherUser, receiver: req.body.user }] })
             .exec().then(data => res.status(200).send(data));
+    },
+    //Elimina un messaggio
+    deleteMessage: (req, res) => {
+        console.log(req.query.id);
+        Message.findByIdAndDelete(req.query.id).exec().then((data) => res.status(200).send(data));
     }
 };
 //# sourceMappingURL=messageController.js.map

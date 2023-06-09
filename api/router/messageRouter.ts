@@ -9,4 +9,6 @@ router.post('/send', messageController.sendMessage)
 
 router.post('/conversation', messageController.getConversation)
 
+router.delete('/', messageController.deleteMessage)
+
 module.exports=router
