@@ -2,6 +2,7 @@ import express, { Router } from "express"
 
 const router=Router()
 const usersRouter=require('./usersRouter')
+const messageRouter=require('./messageRouter')
 
 router.use(express.json())
 
@@ -12,5 +13,8 @@ router.get('/', (req, res)=>{
 
 //Endpoint dell'API "users"
 router.use('/users', usersRouter)
+
+//Endpoint dell'API "messages"
+router.use('/messages', messageRouter)
 
 module.exports=router

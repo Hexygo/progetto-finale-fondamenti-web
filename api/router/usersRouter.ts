@@ -1,4 +1,4 @@
-import express, { Router } from 'express'
+import { Router } from 'express'
 
 const router=Router()
 const usersController=require('../controllers/usersController')
