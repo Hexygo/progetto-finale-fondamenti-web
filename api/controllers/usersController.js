@@ -26,6 +26,7 @@ module.exports = {
         });
     },
     //Invia la richiesta di amicizia ad un altro utente
+    //TODO: Controllare che non ci sia una richiesta di amicizia già pending, e decidere che cosa fare, nel caso
     addFriend: (req, res) => {
         //Errore da lanciare in caso la richiesta sia stata già inviata
         const AlreadySentError = {};
@@ -42,7 +43,7 @@ module.exports = {
                     //Procedo a inviare la richiesta
                     receiver.requests.push(req.body.sender);
                     receiver.save(); //Salvo la modifica su DB
-                    res.status(200).send("Richiesta inserita con successo");
+                    res.status(200).send("Richiesta inviata con successo");
                 }
                 catch (err) {
                     if (err !== AlreadySentError)

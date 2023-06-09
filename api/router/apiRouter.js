@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
 const router = (0, express_1.Router)();
 const usersRouter = require('./usersRouter');
+const messageRouter = require('./messageRouter');
 router.use(express_1.default.json());
 //Endpoint root dell'API
 router.get('/', (req, res) => {
@@ -33,5 +34,7 @@ router.get('/', (req, res) => {
 });
 //Endpoint dell'API "users"
 router.use('/users', usersRouter);
+//Endpoint dell'API "messages"
+router.use('/messages', messageRouter);
 module.exports = router;
 //# sourceMappingURL=apiRouter.js.map
