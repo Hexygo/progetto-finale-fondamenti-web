@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const User = require('../models/User');
 module.exports = {
     //Restituisce come risposta in formato JSON tutti gli utenti
@@ -68,7 +66,11 @@ module.exports = {
             //Aggiungo l'amico nella friendlist
             user.friends.push(req.body.sender);
             user.save();
-            res.status(200).send("Richiesta accettata");
+        });
+        User.findById(req.body.sender).exec().then((user) => {
+            //Aggiungo l'utente alla lista amici del mittente della richiesta
+            user.friends.push(req.body.user);
+            user.save();
         });
     }
 };

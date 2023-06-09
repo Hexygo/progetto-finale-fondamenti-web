@@ -3,6 +3,8 @@ import express, { Router } from "express"
 const router=Router()
 const usersController=require('../controllers/usersController')
 
+router.get("/", (req, res)=>res.status(200).send("Root endpoint for the Users API."))
+
 //Endpoint "all" dell'API "users"
 router.get('/all',usersController.getAllUsers)
 

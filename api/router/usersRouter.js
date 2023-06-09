@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
 const usersController = require('../controllers/usersController');
+router.get("/", (req, res) => res.status(200).send("Root endpoint for the Users API."));
 //Endpoint "all" dell'API "users"
 router.get('/all', usersController.getAllUsers);
 //Endpoint "username" dell'API "users"
