@@ -11,8 +11,10 @@ module.exports={
 
     //Restituisce come risposta in formato JSON il singolo utente che ha un determinato username, specificato nel url della richiesta
     getUserByUsername:(req, res)=>{
-        User.find({username:req.params.username}).exec().then((data)=>{
-            res.send(data)
+        User.findOne({username:req.params.username}).exec().then((data)=>{
+            if(data)
+                return res.status(200).send(data)
+            return res.status(404).send("NOT FOUND")//L'utente non esiste
         })
     },
 
