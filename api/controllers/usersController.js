@@ -56,22 +56,31 @@ module.exports = {
             }
         });
     },
-    //Accetto la richiesta di amicizia
+    //Accetta la richiesta di amicizia
     acceptRequest: (req, res) => {
-        //Cerco l'utente che deve accettare le richieste
+        //Cerca l'utente che deve accettare le richieste
         User.findById(req.body.user).exec().then((user) => {
             //Optional TODO: Controllare che il sender esista
-            //Rimuovo la richiesta accettata
+            //Rimuove la richiesta accettata
             user.requests = user.requests.filter(r => r != req.body.sender);
-            //Aggiungo l'amico nella friendlist
+            //Aggiunge l'amico nella friendlist
             user.friends.push(req.body.sender);
             user.save();
         });
         User.findById(req.body.sender).exec().then((user) => {
-            //Aggiungo l'utente alla lista amici del mittente della richiesta
+            //Aggiunge l'utente alla lista amici del mittente della richiesta
             user.friends.push(req.body.user);
             user.save();
         });
+        res.status(200).send("Richiesta accettata");
+    },
+    //Rifiuta la richiesta di amicizia
+    refuseRequest: (req, res) => {
+        User.findById(req.body.user).exec().then((user) => {
+            user.requests = user.requests.filter(r => r != req.body.sender);
+            user.save();
+        });
+        res.status(200).send("Richiesta rifiutata");
     }
 };
 //# sourceMappingURL=usersController.js.map
