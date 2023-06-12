@@ -15,6 +15,9 @@ router.get('/username/:username', usersController.getUserByUsername)
 //Usare PUT?
 router.post('/register', usersController.addUser)
 
+//Endpoint "login" dell'API "users", accetta richieste POST
+router.post('/login', usersController.login)
+
 //Endpoint "addFriend" dell'API "users", accetta richieste POST
 router.post('/addFriend', usersController.addFriend)
 

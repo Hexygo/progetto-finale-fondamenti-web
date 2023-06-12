@@ -86,5 +86,17 @@ module.exports={
             user.save()
         })
         res.status(200).send("Richiesta rifiutata")
+    },
+
+    //Logga un utente, se le sue credenziali sono corrette
+    //Problema: la password è in plain text, (crittografia?)
+    login: (req, res)=>{
+        User.findOne({username:req.body.username}).exec().then((user)=>{
+            console.log(user)
+            if(user.password==req.body.password)
+                return res.status(200).send(user)//Per maggiore sicurezza, immagino vada mandato un cookie
+            return res.status(403).send("UNAUTHORIZED")
+            
+        })
     }
 }
