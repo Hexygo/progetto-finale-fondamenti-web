@@ -25,7 +25,7 @@ module.exports = {
     },
     //Ritorna la conversazione tra due utenti
     getConversation: (req, res) => {
-        Message.find({ $or: [{ sender: req.body.user, receiver: req.body.otherUser }, { sender: req.body.otherUser, receiver: req.body.user }] })
+        Message.find({ $or: [{ sender: req.body.user, receiver: req.body.otherUser }, { sender: req.body.otherUser, receiver: req.body.user }] }).populate({ path: "sender", select: "username" }).populate({ path: "receiver", select: "username" })
             .exec().then(data => res.status(200).send(data));
     },
     //Elimina un messaggio

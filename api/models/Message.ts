@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema({
-    sender:mongoose.Types.ObjectId,
-    receiver:mongoose.Types.ObjectId,
+    sender:{type:mongoose.Types.ObjectId, ref:"User"},
+    receiver:{type:mongoose.Types.ObjectId, ref:"User"},
     content:String,
     time:Date
 })

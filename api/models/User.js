@@ -7,8 +7,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const userSchema = new mongoose_1.default.Schema({
     username: { type: String, unique: true },
     password: String,
-    friends: [mongoose_1.default.Types.ObjectId],
-    requests: [mongoose_1.default.Types.ObjectId]
+    friends: [{ type: mongoose_1.default.Types.ObjectId, ref: "User" }],
+    requests: [{ type: mongoose_1.default.Types.ObjectId, ref: "User" }]
 });
 module.exports = mongoose_1.default.model('User', userSchema);
 //# sourceMappingURL=User.js.map

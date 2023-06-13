@@ -3,15 +3,14 @@ const User=require('../models/User')
 module.exports={
     //Restituisce come risposta in formato JSON tutti gli utenti
     getAllUsers:(req, res)=>{
-        User.find({}).exec().then((data)=>{
+        User.find({}).populate({path:"requests", select:"username"}).populate({path:"friends", select:"username"}).exec().then((data)=>{
             res.send(data)
-        })
-        
+        })        
     },
 
     //Restituisce come risposta in formato JSON il singolo utente che ha un determinato username, specificato nel url della richiesta
     getUserByUsername:(req, res)=>{
-        User.findOne({username:req.params.username}).exec().then((data)=>{
+        User.findOne({username:req.params.username}).populate({path:"requests", select:"username"}).populate({path:"friends", select:"username"}).exec().then((data)=>{
             if(data)
                 return res.status(200).send(data)
             return res.status(404).send("NOT FOUND")//L'utente non esiste
@@ -32,6 +31,7 @@ module.exports={
 
     //Invia la richiesta di amicizia ad un altro utente
     //TODO: Controllare che non ci sia una richiesta di amicizia già pending, e decidere che cosa fare, nel caso
+    //TODO: Usare l'id per il receiver
     addFriend:(req,res)=>{
         //Errore da lanciare in caso la richiesta sia stata già inviata
         const AlreadySentError={}
@@ -61,6 +61,7 @@ module.exports={
     },
 
     //Accetta la richiesta di amicizia
+    //TODO: Controllare che sia stata inviata la richiesta di amicizia
     acceptRequest:(req,res)=>{
         //Cerca l'utente che deve accettare le richieste
         User.findById(req.body.user).exec().then((user)=>{
@@ -91,12 +92,10 @@ module.exports={
     //Logga un utente, se le sue credenziali sono corrette
     //Problema: la password è in plain text, (crittografia?)
     login: (req, res)=>{
-        User.findOne({username:req.body.username}).exec().then((user)=>{
-            console.log(user)
+        User.findOne({username:req.body.username}).populate({path:"requests", select:"username"}).populate({path:"friends", select:"username"}).exec().then((user)=>{
             if(user.password==req.body.password)
                 return res.status(200).send(user)//Per maggiore sicurezza, immagino vada mandato un cookie
-            return res.status(403).send("UNAUTHORIZED")
-            
+            return res.status(403).send("UNAUTHORIZED")            
         })
     }
 }
