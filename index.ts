@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const express=require('express');
+const cors=require('cors')
 const password=require('./api/env').password
 
 const apiRouter=require('./api/router/apiRouter')
@@ -15,6 +16,10 @@ const db=mongoose.connection
 db.once('open', ()=>{
     console.log('Successfully connected to', db.name)
 })
+
+//TODO:Assicurarsi di non far esplodere tutto mandando richieste vuote, provare con try...catch?
+
+app.use(cors())
 
 app.use('/', express.static('frontend/build'))
 
