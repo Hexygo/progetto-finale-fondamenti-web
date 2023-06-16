@@ -7,12 +7,16 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import InputGroup from 'react-bootstrap/InputGroup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function LoginForm(){
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
     const navigate=useNavigate()
+    const[pwd, setpwd]= useState(false);
 
     function handleSubmit(e){
         e.preventDefault()
@@ -46,9 +50,12 @@ export default function LoginForm(){
                     <Row>
                         <Col md={3}></Col>
                         <Col md={6}>
-                            <FloatingLabel label="Password" className="mb-3">                
-                                <Form.Control value={password} placeholder="Password" onChange={e=>setPassword(e.target.value)} type="password"/>
-                            </FloatingLabel>
+                            <InputGroup>
+                                <FloatingLabel label="Password" className="mb-3">                
+                                    <Form.Control value={password} placeholder="Password" onChange={e=>setPassword(e.target.value)} type={(pwd) ? "text" : "password"}/>
+                                </FloatingLabel>
+                                <Button style={{width: "50px"}} variant="dark" className="mb-3" size="large" onClick={function swap(){setpwd(!pwd)}}><FontAwesomeIcon  icon={(pwd) ? faEye : faEyeSlash} id="togglePassword"></FontAwesomeIcon></Button> 
+                            </InputGroup>
                         </Col>
                         <Col md={3}></Col>
                     </Row>                    
@@ -66,7 +73,7 @@ export default function LoginForm(){
                         </Col>
                         <Col md={2}></Col>
                         <Col className="text-center mb-3 d-grid gap-2" md={2}>
-                            <Button variant="outline-primary" size="small" type="submit">Log in</Button>
+                            <Button variant="outline-primary" size="small" type="submit"><h5>Log in</h5></Button>
                         </Col>
                         <Col md={3}></Col>
                     </Row>
