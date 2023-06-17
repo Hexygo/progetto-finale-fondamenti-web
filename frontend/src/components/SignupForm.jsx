@@ -7,12 +7,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import Alert from 'react-bootstrap/Alert';
-import { render } from "react-dom";
 
 
 export default function SignupForm(){
@@ -39,17 +37,17 @@ export default function SignupForm(){
             if(data){
                 navigate("/home")
             }
-        })            .catch((err)=>
+        }).catch((err)=>
                 console.warn(err))
           
     }
 
     function check(p1,p2){
-        if(password!=cpassword){ 
-            setShow(false) 
-            console.log("sono diverse")
+        if(p1!==p2){ 
+            setShow(false)
         }   
-        else    setShow(true)  
+        else
+            setShow(true)  
     }
 
     return (
@@ -70,7 +68,7 @@ export default function SignupForm(){
                         <Col md={6}>
                             <InputGroup>
                                 <FloatingLabel label="Password" className="mb-3">                
-                                    <Form.Control value={password} placeholder="Password" onChange={e=>{setPassword(e.target.value); check()}} type={(pwd) ? "text" : "password"}/>
+                                    <Form.Control value={password} placeholder="Password" onChange={e=>{setPassword(e.target.value); check(e.target.value, cpassword)}} type={(pwd) ? "text" : "password"}/>
                                 </FloatingLabel>   
                                 <Button style={{width: "50px"}} variant="dark"className="mb-3" size="large" onClick={function swap(){setpwd(!pwd)}}><FontAwesomeIcon  icon={(pwd) ? faEye : faEyeSlash} id="togglePassword"></FontAwesomeIcon></Button> 
                             </InputGroup>                        
@@ -82,7 +80,7 @@ export default function SignupForm(){
                         <Col md={6}>
                             <InputGroup>
                                 <FloatingLabel label="Conferma Password" className="mb-3">                
-                                    <Form.Control value={cpassword} placeholder="Password" onChange={e=>{setCPassword(e.target.value); check()}} type={(pwd2) ? "text" : "password"}/>
+                                    <Form.Control value={cpassword} placeholder="Password" onChange={e=>{setCPassword(e.target.value); check(password, e.target.value)}} type={(pwd2) ? "text" : "password"}/>
                                 </FloatingLabel>
                                 <Button style={{width: "50px"}} variant="dark" className="mb-3" size="large" onClick={function swap(){setpwd2(!pwd2)}}><FontAwesomeIcon  icon={(pwd2) ? faEye : faEyeSlash} id="togglePassword"></FontAwesomeIcon></Button>  
                             </InputGroup>

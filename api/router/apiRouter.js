@@ -29,7 +29,7 @@ const usersRouter = require('./usersRouter');
 const messageRouter = require('./messageRouter');
 const EmptyReqError = {};
 router.use(express_1.default.json());
-//Respinge le richieste con argomenti nulli 
+//Respinge le richieste con argomenti nulli, con STATUS_CODE:400-BAD_REQUEST
 router.use((req, res, next) => {
     try {
         if (req.method === 'POST') {
