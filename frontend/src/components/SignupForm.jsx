@@ -11,34 +11,43 @@ import Modal from 'react-bootstrap/Modal';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
+import Alert from 'react-bootstrap/Alert';
+import { render } from "react-dom";
 
 
 export default function SignupForm(){
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
     const [cpassword, setCPassword]=useState("")
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(true)
     const navigate=useNavigate()
     const[pwd, setpwd]= useState(false);
-    const[pwd2, setpwd2]= useState(false);
+    const[pwd2, setpwd2]= useState(false);  
+    
 
     function handleSubmit(e){
         e.preventDefault()
-        if(password===cpassword){            
-            axios({
-                method:'post',
-                url:'http://localhost:3000/api/users/register',
-                data:{
-                    username:username,
-                    password:password
-                }
-            }).then(data=>{
-                if(data){
-                    navigate("/home")
-                }
-            })
-        }
-        else    setShow(true)          
+        setShow(false)           
+        axios({
+            method:'post',
+            url:'http://localhost:3000/api/users/register',
+            data:{
+                username:username,
+                password:password
+            }
+        }).then(data=>{
+            if(data){
+                navigate("/home")
+            }
+        })          
+    }
+
+    function check(p1,p2){
+        if(password!=cpassword){ 
+            setShow(false) 
+            console.log("sono diverse")
+        }   
+        else    setShow(true)  
     }
 
     return (
@@ -59,7 +68,7 @@ export default function SignupForm(){
                         <Col md={6}>
                             <InputGroup>
                                 <FloatingLabel label="Password" className="mb-3">                
-                                    <Form.Control value={password} placeholder="Password" onChange={e=>setPassword(e.target.value)} type={(pwd) ? "text" : "password"}/>
+                                    <Form.Control value={password} placeholder="Password" onChange={e=>{setPassword(e.target.value); check()}} type={(pwd) ? "text" : "password"}/>
                                 </FloatingLabel>   
                                 <Button style={{width: "50px"}} variant="dark"className="mb-3" size="large" onClick={function swap(){setpwd(!pwd)}}><FontAwesomeIcon  icon={(pwd) ? faEye : faEyeSlash} id="togglePassword"></FontAwesomeIcon></Button> 
                             </InputGroup>                        
@@ -71,7 +80,7 @@ export default function SignupForm(){
                         <Col md={6}>
                             <InputGroup>
                                 <FloatingLabel label="Conferma Password" className="mb-3">                
-                                    <Form.Control value={cpassword} placeholder="Password" onChange={e=>setCPassword(e.target.value)} type={(pwd2) ? "text" : "password"}/>
+                                    <Form.Control value={cpassword} placeholder="Password" onChange={e=>{setCPassword(e.target.value); check()}} type={(pwd2) ? "text" : "password"}/>
                                 </FloatingLabel>
                                 <Button style={{width: "50px"}} variant="dark" className="mb-3" size="large" onClick={function swap(){setpwd2(!pwd2)}}><FontAwesomeIcon  icon={(pwd2) ? faEye : faEyeSlash} id="togglePassword"></FontAwesomeIcon></Button>  
                             </InputGroup>
@@ -96,14 +105,18 @@ export default function SignupForm(){
                         </Col>
                         <Col md={3}></Col>
                     </Row>
-                </Form>              
-                <Modal centered size="sm" show={show} onHide={function handleClose(){setShow(false)}}>
-                    <Modal.Header>
-                        <Modal.Title>Attenzione</Modal.Title>
-                    </Modal.Header>
-                        <Modal.Body>Le password non coincidono!</Modal.Body>
-                </Modal>  
-            </Container>
-        </>
+                    <Row className={(show) ? "invisible":"visible"}>
+                        <Col md={3}></Col>
+                        <Col md={6}>
+                            <Alert variant="danger">
+                                <Alert.Heading>Attenzione</Alert.Heading>
+                                <p>Le due password non coincidono</p>
+                            </Alert>
+                        </Col>
+                        <Col md={3}></Col>
+                    </Row>
+                </Form> 
+            </Container>            
+        </>        
     )
 }
