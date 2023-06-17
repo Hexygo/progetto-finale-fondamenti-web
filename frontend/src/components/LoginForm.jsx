@@ -73,7 +73,7 @@ export default function LoginForm(){
                         </Col>
                         <Col md={2}></Col>
                         <Col className="text-center mb-3 d-grid gap-2" md={2}>
-                            <Button variant="outline-primary" size="small" type="submit"><h5>Log in</h5></Button>
+                            <Button variant="outline-primary" size="small" type="submit" disabled={username==='' || password===''}><h5>Log in</h5></Button>
                         </Col>
                         <Col md={3}></Col>
                     </Row>

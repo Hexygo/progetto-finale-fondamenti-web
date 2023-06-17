@@ -24,22 +24,22 @@ export default function SignupForm(){
     
 
     function handleSubmit(e){
-        e.preventDefault()
-        setShow(false)           
-        axios({
-            method:'post',
-            url:'http://localhost:3000/api/users/register',
-            data:{
-                username:username,
-                password:password
-            }
-        }).then(data=>{
-            if(data){
-                navigate("/home")
-            }
-        }).catch((err)=>
+        e.preventDefault()       
+        if (username!=='' && password!=='' && cpassword!=='') {
+            axios({
+                method:'post',
+                url:'http://localhost:3000/api/users/register',
+                data:{
+                    username:username,
+                    password:password
+                }
+            }).then(data=>{
+                if(data){
+                    navigate("/home")
+                }
+            }).catch((err)=> //Utente già creato su DB, prompt al login
                 console.warn(err))
-          
+        }
     }
 
     function check(p1,p2){
@@ -101,7 +101,7 @@ export default function SignupForm(){
                         </Col>
                         <Col md={2}></Col>
                         <Col className="text-center mb-3 d-grid gap-2" md={2}>
-                            <Button variant="outline-primary" size="small" type="submit"><h5>Sign Up</h5></Button>
+                            <Button variant="outline-primary" size="small" type="submit" disabled={username==='' || password==='' || !show}><h5>Sign Up</h5></Button>
                         </Col>
                         <Col md={3}></Col>
                     </Row>
