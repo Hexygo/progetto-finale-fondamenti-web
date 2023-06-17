@@ -39,7 +39,9 @@ export default function SignupForm(){
             if(data){
                 navigate("/home")
             }
-        })          
+        })            .catch((err)=>
+                console.warn(err))
+          
     }
 
     function check(p1,p2){
