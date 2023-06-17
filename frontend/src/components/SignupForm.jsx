@@ -11,6 +11,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import Alert from 'react-bootstrap/Alert';
+import Modal from 'react-bootstrap/Modal';
 
 
 export default function SignupForm(){
@@ -21,6 +22,7 @@ export default function SignupForm(){
     const navigate=useNavigate()
     const[pwd, setpwd]= useState(false);
     const[pwd2, setpwd2]= useState(false);  
+    const [modal, setModal] = useState(false)
     
 
     function handleSubmit(e){
@@ -37,8 +39,10 @@ export default function SignupForm(){
                 if(data){
                     navigate("/home")
                 }
-            }).catch((err)=> //Utente già creato su DB, prompt al login
-                console.warn(err))
+            }).catch((err)=>{   //Utente già creato su DB, prompt al login
+                console.warn(err)
+                setModal(true)
+            })
         }
     }
 
@@ -115,8 +119,23 @@ export default function SignupForm(){
                         </Col>
                         <Col md={3}></Col>
                     </Row>
-                </Form> 
-            </Container>            
+                </Form>                
+            </Container>   
+            <Modal centered show={modal} onHide={function modal(){setModal(false)}}> 
+                    <Modal.Header >
+                        <Modal.Title>Username già in uso</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Se stai cercando di fare il login
+                        <Button variant="link" type="button" 
+                            onClick={   function goToLogin(e){
+                                            e.preventDefault()
+                                            navigate("/")
+                                        }}>
+                            clicca qui!
+                        </Button>
+                    </Modal.Body>
+                </Modal>         
         </>        
     )
 }
