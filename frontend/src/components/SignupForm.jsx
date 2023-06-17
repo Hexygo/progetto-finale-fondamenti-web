@@ -36,6 +36,8 @@ export default function SignupForm(){
                 if(data){
                     navigate("/home")
                 }
+            }).catch((err)=>{
+                console.warn(err)
             })
         }
         else    setShow(true)          
