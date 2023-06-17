@@ -8,6 +8,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import InputGroup from 'react-bootstrap/InputGroup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function SignupForm(){
@@ -17,6 +20,7 @@ export default function SignupForm(){
     const [show, setShow] = useState(false)
     const navigate=useNavigate()
     const[pwd, setpwd]= useState(false);
+    const[pwd2, setpwd2]= useState(false);
 
     function handleSubmit(e){
         e.preventDefault()
@@ -53,28 +57,27 @@ export default function SignupForm(){
                     <Row>
                         <Col md={3}></Col>
                         <Col md={6}>
-                            <FloatingLabel label="Password" className="mb-3">                
-                                <Form.Control value={password} placeholder="Password" onChange={e=>setPassword(e.target.value)} type={(pwd) ? "text" : "password"}/>
-                            </FloatingLabel>                     
+                            <InputGroup>
+                                <FloatingLabel label="Password" className="mb-3">                
+                                    <Form.Control value={password} placeholder="Password" onChange={e=>setPassword(e.target.value)} type={(pwd) ? "text" : "password"}/>
+                                </FloatingLabel>   
+                                <Button style={{width: "50px"}} variant="dark"className="mb-3" size="large" onClick={function swap(){setpwd(!pwd)}}><FontAwesomeIcon  icon={(pwd) ? faEye : faEyeSlash} id="togglePassword"></FontAwesomeIcon></Button> 
+                            </InputGroup>                        
                         </Col>
                         <Col md={3}></Col>
                     </Row>
                     <Row>
                         <Col md={3}></Col>
                         <Col md={6}>
-                            <FloatingLabel label="Conferma Password" className="mb-3">                
-                                <Form.Control value={cpassword} placeholder="Password" onChange={e=>setCPassword(e.target.value)} type={(pwd) ? "text" : "password"}/>
-                            </FloatingLabel>
+                            <InputGroup>
+                                <FloatingLabel label="Conferma Password" className="mb-3">                
+                                    <Form.Control value={cpassword} placeholder="Password" onChange={e=>setCPassword(e.target.value)} type={(pwd2) ? "text" : "password"}/>
+                                </FloatingLabel>
+                                <Button style={{width: "50px"}} variant="dark" className="mb-3" size="large" onClick={function swap(){setpwd2(!pwd2)}}><FontAwesomeIcon  icon={(pwd2) ? faEye : faEyeSlash} id="togglePassword"></FontAwesomeIcon></Button>  
+                            </InputGroup>
                         </Col>
                         <Col md={3}></Col>
                     </Row>
-                    <Row>
-                        <Col md={7}></Col>
-                        <Col md={2} className="text-center mb-3">   
-                            Mostra le password <Form.Check inline onClick={function swap(){setpwd(!pwd)}}/>
-                        </Col>
-                        <Col md={3}></Col>
-                    </Row> 
                     <Row>
                         <Col md={3}></Col>
                         <Col className="text-center mb-3" md={2}>
