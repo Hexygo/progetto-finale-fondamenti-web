@@ -91,9 +91,13 @@ module.exports = {
     //Problema: la password è in plain text, (crittografia?)
     login: (req, res) => {
         User.findOne({ username: req.body.username }).populate({ path: "requests", select: "username" }).populate({ path: "friends", select: "username" }).exec().then((user) => {
-            if (user.password == req.body.password)
+            if (!user) {
+                return res.status(404).send("NOT_FOUND"); //L'utente non esiste sul DB
+            }
+            if (user.password == req.body.password) //Controllo la password
+                //Utente loggato
                 return res.status(200).send(user); //Per maggiore sicurezza, immagino vada mandato un cookie
-            return res.status(403).send("UNAUTHORIZED");
+            return res.status(403).send("UNAUTHORIZED"); //Password errata     
         });
     }
 };
