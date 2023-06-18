@@ -1,10 +1,13 @@
 import express, { Router } from "express"
+import cookieParser from 'cookie-parser'
 
 const router=Router()
 const usersRouter=require('./usersRouter')
 const messageRouter=require('./messageRouter')
 
 const EmptyReqError={}
+
+router.use(cookieParser())
 
 router.use(express.json())
 

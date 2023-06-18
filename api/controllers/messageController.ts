@@ -32,7 +32,6 @@ module.exports={
 
     //Elimina un messaggio
     deleteMessage:(req, res)=>{
-        console.log(req.query.id)
         Message.findByIdAndDelete(req.query.id).exec().then((data)=>res.status(200).send(data))
     }
     

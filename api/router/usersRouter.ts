@@ -27,4 +27,6 @@ router.post('/accept', usersController.acceptRequest)
 //Endpoint "refuse" dell'API "users", accetta richieste POST
 router.post('/refuse', usersController.refuseRequest)
 
+router.post('/logout', usersController.logout)
+
 module.exports=router
