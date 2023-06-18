@@ -4,7 +4,7 @@ const Session=require('../models/Session')
 module.exports={
     //Restituisce come risposta in formato JSON tutti gli utenti
     getAllUsers:(req, res)=>{
-        User.find({}).exec().then((data)=>{
+        User.find({}).select('-password').exec().then((data)=>{
             res.send(data)
         })
         
@@ -12,7 +12,7 @@ module.exports={
 
     //Restituisce come risposta in formato JSON il singolo utente che ha un determinato username, specificato nel url della richiesta
     getUserByUsername:(req, res)=>{
-        User.findOne({username:req.params.username}).exec().then((data)=>{
+        User.findOne({username:req.params.username}).select('-password').exec().then((data)=>{
             if(data)
                 return res.status(200).send(data)
             return res.status(404).send("NOT FOUND")//L'utente non esiste
@@ -20,14 +20,20 @@ module.exports={
     },
 
     //Aggiunge un utente al database, se questo non esiste
-    addUser:(req, res)=>{
+    register:(req, res)=>{
         User.findOne({username:req.body.username}).exec().then((data)=>{
             if(data){
                 //Caso in cui l'utente esiste nel database, ritorna una risposta con codice d'errore 403 FORBIDDEN
-                res.status(403).send("FORBIDDEN")
+                return res.status(403).send("FORBIDDEN")
             }else {
                 //Caso in cui l'utente esiste, lo aggiunge al database, e ritorna una risposta con l'utente appena registrato nel DB
-                User.create({username:req.body.username, password:req.body.password, friends:[], requests:[]}).then((user)=>res.status(201).send(user))
+                User.create({username:req.body.username, password:req.body.password, friends:[], requests:[]}).then((user)=>{
+                    Session.create({user_id:user._id, expires:Date.now()+12*60*60*1000}).then(cookie=>{
+                        res.cookie('session_token', cookie._id, {expires:cookie.expires})
+                        const {['password']:password, ...rest}=user._doc
+                        return res.status(200).send(rest)
+                    })
+                })
             }})
     },
 
@@ -49,15 +55,15 @@ module.exports={
                     //Procedo a inviare la richiesta
                     receiver.requests.push(req.body.sender)
                     receiver.save() //Salvo la modifica su DB
-                    res.status(200).send("Richiesta inviata con successo")
+                    return res.status(200).send("Richiesta inviata con successo")
                 } catch(err){
                     if(err!==AlreadySentError)
                         throw(err)  //L'errore è interno al sistema
-                    res.status(403).send("Richiesta di amicizia già inviata")
+                    return res.status(403).send("Richiesta di amicizia già inviata")
                 }
             } else {
                 //Se l'utente non esiste, ritorna l'errore 404 NOT FOUND
-                res.status(404).send("NOT FOUND")
+                return res.status(404).send("NOT FOUND")
             }})
     },
 
@@ -77,7 +83,7 @@ module.exports={
             user.friends.push(req.body.user)
             user.save()
         })
-        res.status(200).send("Richiesta accettata")
+        return res.status(200).send("Richiesta accettata")
     },
 
     //Rifiuta la richiesta di amicizia
@@ -86,11 +92,12 @@ module.exports={
             user.requests=user.requests.filter(r=>r!=req.body.sender)
             user.save()
         })
-        res.status(200).send("Richiesta rifiutata")
+        return res.status(200).send("Richiesta rifiutata")
     },
 
     //Logga un utente, se le sue credenziali sono corrette
     //Problema: la password è in plain text, (crittografia?)
+    //TODO: Impedire il login se c'è una sessione già attiva?
     login: (req, res)=>{
         User.findOne({username:req.body.username}).populate({path:"requests", select:"username"}).populate({path:"friends", select:"username"}).exec().then((user)=>{
             if(!user){
@@ -100,7 +107,8 @@ module.exports={
                 //Utente loggato
                 Session.create({user_id:user._id, expires:Date.now()+12*60*60*1000}).then(cookie=>{
                     res.cookie('session_token', cookie._id.toString(), {expires:cookie.expires})
-                    return res.status(200).send(user)//Per maggiore sicurezza, immagino vada mandato un cookie
+                    const {['password']:password, ...rest}=user._doc
+                    return res.status(200).send(rest)//Per maggiore sicurezza, immagino vada mandato un cookie
                 })                
             }else
                 return res.status(403).send("UNAUTHORIZED")//Password errata     
@@ -112,6 +120,17 @@ module.exports={
         Session.findByIdAndDelete(req.cookies['session_token']).exec().then(data=>{
             res.cookie('session_token', 'invalid', {expires:new Date})
             return res.status(200).end()
+        })
+    },
+
+    cookiesMiddleware: (req, res, next)=>{//Middleware per la verifica dei cookie
+        if(!req.cookies)//La richiesta non ha cookie, automaticamente respinta
+            return res.status(401).end()
+        Session.findById(req.cookies['session_token']).exec().then(session=>{
+            if(session)//cookie valido
+                next()
+            else
+                return res.status(401).end()//cookie non valido
         })
     }
 }

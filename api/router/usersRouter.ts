@@ -3,6 +3,15 @@ import { Router } from 'express'
 const router=Router()
 const usersController=require('../controllers/usersController')
 
+//Endpoint "login" dell'API "users", accetta richieste POST
+router.post('/login', usersController.login)
+
+//Endpoint "register" dell'API "users", accetta richieste POST
+//Usare PUT?
+router.post('/register', usersController.register)
+
+router.use(usersController.cookiesMiddleware)
+
 router.get('/', (req, res)=>res.status(200).send('Root endpoint for the Users API.'))
 
 //Endpoint "all" dell'API "users"
@@ -10,13 +19,6 @@ router.get('/all',usersController.getAllUsers)
 
 //Endpoint "username" dell'API "users"
 router.get('/username/:username', usersController.getUserByUsername)
-
-//Endpoint "register" dell'API "users", accetta richieste POST
-//Usare PUT?
-router.post('/register', usersController.addUser)
-
-//Endpoint "login" dell'API "users", accetta richieste POST
-router.post('/login', usersController.login)
 
 //Endpoint "addFriend" dell'API "users", accetta richieste POST
 router.post('/addFriend', usersController.addFriend)
