@@ -10,6 +10,8 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
+import { sha256 } from 'js-sha256';
+import Modal from 'react-bootstrap/Modal';
 
 
 export default function LoginForm(){
@@ -17,6 +19,7 @@ export default function LoginForm(){
     const [password, setPassword]=useState("")
     const navigate=useNavigate()
     const[pwd, setpwd]= useState(false);
+    const [modal, setModal] = useState(false)
 
     function handleSubmit(e){
         e.preventDefault()
@@ -25,12 +28,15 @@ export default function LoginForm(){
             url:'http://localhost:3000/api/users/login',
             data:{
                 username:username,
-                password:password
+                password:sha256(password)
             }
         }).then(data=>{
             if(data){
                 navigate("/home")
             }
+        }).catch((err)=>{   //Credenziali errate
+            console.warn(err)
+            setModal(true)
         })
     }
 
@@ -79,6 +85,21 @@ export default function LoginForm(){
                     </Row>
                 </Form>                
             </Container>
+            <Modal centered show={modal} onHide={function modal(){setModal(false)}}> 
+                    <Modal.Header >
+                        <Modal.Title>Credenziali errate</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Se non hai ancora creato un account
+                        <Button variant="link" type="button" 
+                            onClick={   function goToLogin(e){
+                                            e.preventDefault()
+                                            navigate("/signup")
+                                        }}>
+                            clicca qui!
+                        </Button>
+                    </Modal.Body>
+                </Modal> 
         </>
     )
 }

@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import Alert from 'react-bootstrap/Alert';
 import Modal from 'react-bootstrap/Modal';
+import { sha256 } from 'js-sha256';
 
 
 export default function SignupForm(){
@@ -24,16 +25,15 @@ export default function SignupForm(){
     const[pwd2, setpwd2]= useState(false);  
     const [modal, setModal] = useState(false)
     
-
     function handleSubmit(e){
-        e.preventDefault()       
+        e.preventDefault() 
         if (username!=='' && password!=='' && cpassword!=='') {
             axios({
                 method:'post',
                 url:'http://localhost:3000/api/users/register',
                 data:{
                     username:username,
-                    password:password
+                    password:sha256(password)
                 }
             }).then(data=>{
                 if(data){
