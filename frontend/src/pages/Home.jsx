@@ -1,3 +1,5 @@
-export default function Home(){
+import axios from 'axios'
+
+export default function Home({loggedUser}){
     return (<>Home</>)
 }

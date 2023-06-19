@@ -14,7 +14,7 @@ import { sha256 } from 'js-sha256';
 import Modal from 'react-bootstrap/Modal';
 
 
-export default function LoginForm(){
+export default function LoginForm({setLoggedUser}){
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
     const navigate=useNavigate()
@@ -29,9 +29,11 @@ export default function LoginForm(){
             data:{
                 username:username,
                 password:sha256(password)
-            }
+            },
+            withCredentials:true
         }).then(data=>{
             if(data){
+                setLoggedUser(data.data)
                 navigate("/home")
             }
         }).catch((err)=>{   //Credenziali errate
