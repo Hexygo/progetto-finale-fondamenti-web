@@ -39,32 +39,47 @@ module.exports = {
     },
 
     //Invia la richiesta di amicizia ad un altro utente
-    //TODO: Controllare che non ci sia una richiesta di amicizia già pending, e decidere che cosa fare, nel caso
     addFriend: (req, res) => {
         //Errore da lanciare in caso la richiesta sia stata già inviata
         const AlreadySentError = {}
+        const PendingRequest = {}
         //Cerco l'utente sul DB
-        User.findOne({ username: req.body.receiver }).exec().then((receiver) => {
+        User.findById(req.body.receiver).exec().then((receiver) => {
             if (receiver) {
-                //L'utente esiste quindi invio la richiesta di amicizia
                 //Controllo che la richiesta non sia stata già inviata
-                try {
-                    receiver.requests.forEach((r) => {
-                        if (r == req.body.sender)
-                            throw (AlreadySentError) //Richiesta già inviata ---> Invio l'errore                        
-                    })
-                    //Procedo a inviare la richiesta
-                    receiver.requests.push(req.body.sender)
-                    receiver.save() //Salvo la modifica su DB
-                    return res.status(200).send("Richiesta inviata con successo")
-                } catch (err) {
-                    if (err !== AlreadySentError)
-                        throw (err)  //L'errore è interno al sistema
-                    return res.status(403).send("Richiesta di amicizia già inviata")
-                }
+                //Controllo che non ci sia già una richiesta di amicizia in attesa
+                User.findById(req.body.sender).exec().then((sender) => {
+                    try {
+                        sender.requests.forEach(el => {
+                            if (el == req.body.receiver)
+                                throw (PendingRequest)
+                        })
+                        receiver.requests.forEach((r) => {
+                            if (r == req.body.sender)
+                                throw (AlreadySentError) //Richiesta già inviata ---> Invio l'errore                        
+                        })
+                        //Procedo a inviare la richiesta
+                        receiver.requests.push(req.body.sender)
+                        receiver.save() //Salvo la modifica su DB
+                        res.status(200).send("Richiesta inviata con successo")
+                    } catch (err) {
+                        if (err === PendingRequest){
+                            //Rimuove la richiesta accettata
+                            sender.requests = sender.requests.filter(r => r != req.body.receiver)
+                            //Aggiunge l'amico nella friendlist
+                            sender.friends.push(receiver._id)
+                            receiver.friends.push(sender._id)
+                            receiver.save()
+                            sender.save()
+                            res.status(200).send("ACCEPTED")
+                        }
+                        if (err === AlreadySentError)
+                            res.status(403).send("Richiesta di amicizia già inviata") //L'errore è interno al sistema
+                    }
+                })
             } else {
                 //Se l'utente non esiste, ritorna l'errore 404 NOT FOUND
-                return res.status(404).send("NOT FOUND")
+                res.status(404).send("NOT FOUND")
             }
         })
     },
