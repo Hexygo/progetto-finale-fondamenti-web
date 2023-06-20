@@ -105,7 +105,6 @@ module.exports = {
     },
     //Logga un utente, se le sue credenziali sono corrette
     //Problema: la password è in plain text, (crittografia?)
-    //TODO: Impedire il login se c'è una sessione già attiva?
     login: (req, res) => {
         User.findOne({ username: req.body.username }).populate({ path: "requests", select: "username" }).populate({ path: "friends", select: "username" }).exec().then((user) => {
             if (!user) {
@@ -113,10 +112,19 @@ module.exports = {
             }
             if (user.password == req.body.password) { //Controllo la password
                 //Utente loggato
-                Session.create({ user_id: user._id, expires: Date.now() + 12 * 60 * 60 * 1000 }).then(cookie => {
-                    res.cookie('session_token', cookie._id.toString(), { expires: cookie.expires });
-                    const _a = user._doc, { ['password']: password } = _a, rest = __rest(_a, ['password']);
-                    return res.status(200).send(rest); //Per maggiore sicurezza, immagino vada mandato un cookie
+                Session.findOne({ user_id: user._id }).then(session => {
+                    if (session) {
+                        res.cookie('session_token', session._id.toString(), { expires: session.expires });
+                        const _a = user._doc, { ['password']: password } = _a, rest = __rest(_a, ['password']);
+                        return res.status(200).send(rest);
+                    }
+                    else {
+                        Session.create({ user_id: user._id, expires: Date.now() + 12 * 60 * 60 * 1000 }).then(cookie => {
+                            res.cookie('session_token', cookie._id.toString(), { expires: cookie.expires });
+                            const _a = user._doc, { ['password']: password } = _a, rest = __rest(_a, ['password']);
+                            return res.status(200).send(rest); //Per maggiore sicurezza, immagino vada mandato un cookie
+                        });
+                    }
                 });
             }
             else
