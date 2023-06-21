@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import { sha256 } from 'js-sha256';
 import Modal from 'react-bootstrap/Modal';
+import socket from "../socket";
 
 
 export default function LoginForm({setLoggedUser}){
@@ -34,6 +35,8 @@ export default function LoginForm({setLoggedUser}){
         }).then(data=>{
             if(data){
                 setLoggedUser(data.data)
+                socket.auth={userID:data.data._id}
+                socket.connect()
                 navigate("/home")
             }
         }).catch((err)=>{   //Credenziali errate
