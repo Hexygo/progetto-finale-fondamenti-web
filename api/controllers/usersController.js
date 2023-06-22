@@ -82,7 +82,7 @@ module.exports = {
                             res.status(200).send("ACCEPTED");
                         }
                         if (err === AlreadySentError)
-                            res.status(403).send("Richiesta di amicizia già inviata"); //L'errore è interno al sistema
+                            res.status(403).send("Richiesta di amicizia già inviata");
                     }
                 });
             }
