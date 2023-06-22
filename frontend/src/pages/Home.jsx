@@ -3,6 +3,10 @@ import socket from "../socket"
 import FriendList from '../components/FriendList'
 import Chat from "../components/Chat"
 
+import Container from "react-bootstrap/Container"
+import Row from "react-bootstrap/Row"
+import Col from 'react-bootstrap/Col';
+
 export default function Home({loggedUser}){
     const [users, setUsers]=useState([])
     const [otherUser, setOtherUser]=useState()
@@ -44,13 +48,15 @@ export default function Home({loggedUser}){
     })
 
     return (
-        <article>
-            <aside>
-                <FriendList users={users} setFriendSelected={setFriendSelected} />
-            </aside>
-            <main>
-                {otherUser ? <Chat user={loggedUser} otherUser={otherUser} /> : 'Seleziona un utente per iniziare a chattare'}
-            </main>
-        </article>
+        <Container className=''>
+            <Row>
+                <Col>
+                    <FriendList users={users} setFriendSelected={setFriendSelected} />
+                </Col>
+                <Col>
+                    {otherUser ? <Chat user={loggedUser} otherUser={otherUser} /> : 'Seleziona un utente per iniziare a chattare'}
+                </Col>
+            </Row>
+        </Container>
     )
 }
