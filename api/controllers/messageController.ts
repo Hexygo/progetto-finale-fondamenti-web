@@ -19,9 +19,12 @@ module.exports={
                     receiver:req.body.receiver,
                     content:req.body.content,
                     time:Date.now()
-                }).then((message)=>res.status(200).send(message))
-            }
-        })
+                }).then(async (message)=>{
+                    message=await message.populate({path:'sender', select:'username'})
+                    message=await message.populate({path:"receiver", select:"username"})
+                    res.status(200).send(message)
+                })
+        }})
     },
 
     //Ritorna la conversazione tra due utenti

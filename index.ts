@@ -64,10 +64,20 @@ io.on("connection", (socket) => {
             from:socket.id
         })
     })
+    socket.on('disconnect', ()=>{
+        socket.broadcast.emit('user disconnected', {
+            userID:socket.id,
+            user:socket.user
+        })
+    })
     socket.emit("users", users);
     socket.broadcast.emit('user connected', {
         userID:socket.id,
         user:socket.user
     })
   });
+
+io.on('user disconnected',(socket)=>{
+    console.log(socket)
+})
 

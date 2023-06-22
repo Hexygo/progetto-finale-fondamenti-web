@@ -5,7 +5,7 @@ import axiosInstance from '../axios'
 
 export default function Chat({user, otherUser}){
     const [message, setMessage]=useState('')
-    const [conversation, setConversation]=useState()
+    const [conversation, setConversation]=useState([])
 
     useEffect(()=>{
         console.log('user',user,'otherUser', otherUser)
@@ -24,10 +24,7 @@ export default function Chat({user, otherUser}){
 
     const handleSubmit=(e)=>{
         e.preventDefault()
-        socket.emit('message', {
-            message:message,
-            to:otherUser.userID
-        })
+
         axiosInstance({
             method:'post',
             url:'http://localhost:3000/api/messages/send',
@@ -38,18 +35,25 @@ export default function Chat({user, otherUser}){
             },
             withCredentials:true
         }).then(data=>{
+            socket.emit('message', {
+                message:data.data,
+                to:otherUser.userID
+            })
             setConversation([...conversation, data.data])
             setMessage('')
         })
     }
 
     socket.on('message',({message, from})=>{//Riceve un messaggio dal socket FROM, con contenuto message, poi vediamo cosa farne
-        
+        if(otherUser.userID===from)
+            setConversation([...conversation, message])
+        else
+            console.log('messaggio da ', from)//notifica di messsaggio da parte di x
     })
 
     return(
         <>  
-            {conversation?conversation.map(el=>{return (<p>{el.content}</p>)}):''}
+            {conversation?conversation.map(el=>{return (<p><b>{el.sender.username}:</b>{el.content}</p>)}):''}
             <form onSubmit={handleSubmit}>
                 <input value={message} onChange={e=>setMessage(e.target.value)} placeholder="Scrivi un messaggio..."></input>
                 <button type="submit"></button>

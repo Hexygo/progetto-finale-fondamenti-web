@@ -13,14 +13,25 @@ export default function Home({loggedUser}){
     }, [friendSelected])
 
     socket.on('users',(users)=>{//Evento emesso dal server, che comunica tutti gli utenti collegati in un dato momento
-        users.forEach(user=>user.self=user.user._id===loggedUser._id)
+        users.forEach(user=>{
+            user.self=user.user._id===loggedUser._id
+            user.connected=true
+        })
         setUsers(users)
     })
 
     socket.on('user connected',(user)=>{//Evento emesso dal server quando un utente si connnette
-        console.log(user)
         user.self=false
+        user.connected=true
         setUsers([...users, user])
+    })
+
+    socket.on('user disconnected', disconnectedUser=>{
+        setUsers(users.map(user=>{
+            if(user.userID===disconnectedUser.userID)
+                user.connected=false
+            return user
+        }))
     })
 
     return (<>
