@@ -1,5 +1,6 @@
 import { useState } from "react"
 import axiosInstance from '../axios'
+import socket from "../socket";
 import { useNavigate } from "react-router-dom"
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
@@ -15,7 +16,7 @@ import Modal from 'react-bootstrap/Modal';
 import { sha256 } from 'js-sha256';
 
 
-export default function SignupForm(){
+export default function SignupForm({setLoggedUser}){
     const [username, setUsername]=useState("")
     const [password, setPassword]=useState("")
     const [cpassword, setCPassword]=useState("")
@@ -37,6 +38,19 @@ export default function SignupForm(){
                 }
             }).then(data=>{
                 if(data){
+                    setLoggedUser(data.data)
+                    const cookieToken = document.cookie
+                        .split("; ")
+                        .find((row) => row.startsWith("session_token="))
+                        ?.split("=")[1]
+                    const sessionID = cookieToken
+                    if (sessionID) {
+                        socket.auth = { sessionID: sessionID }
+                    } else
+                        socket.auth = { userID: data.data._id }
+
+                    socket.connect()
+                    console.log(socket)
                     navigate("/home")
                 }
             }).catch((err)=>{   //Utente già creato su DB, prompt al login

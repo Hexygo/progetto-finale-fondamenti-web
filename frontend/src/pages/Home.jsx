@@ -14,32 +14,43 @@ export default function Home({loggedUser}){
 
     socket.on('users',(users)=>{//Evento emesso dal server, che comunica tutti gli utenti collegati in un dato momento
         users.forEach(user=>{
-            user.self=user.user._id===loggedUser._id
+            user.self=user.userID===loggedUser._id
             user.connected=true
         })
         setUsers(users)
     })
 
-    socket.on('user connected',(user)=>{//Evento emesso dal server quando un utente si connnette
-        user.self=false
-        user.connected=true
-        setUsers([...users, user])
+    socket.on('user connected',(connectedUser)=>{
+        let found=false//Evento emesso dal server quando un utente si connnette
+        setUsers(users.map(user=>{
+            if(user.userID===connectedUser.userID){
+                found=true
+                user.self=false
+                user.connected=true
+            }
+            return user
+        }))
+        if(!found){
+            setUsers([...users, connectedUser])
+        }
     })
 
     socket.on('user disconnected', disconnectedUser=>{
         setUsers(users.map(user=>{
-            if(user.userID===disconnectedUser.userID)
+            if(user.userID===disconnectedUser)
                 user.connected=false
             return user
         }))
     })
 
-    return (<>
-        <aside>
-            <FriendList users={users} setFriendSelected={setFriendSelected}/>
-        </aside>
-        <main>
-            {otherUser?<Chat user={loggedUser} otherUser={otherUser}/>:'Seleziona un utente per iniziare a chattare'}
-        </main></>
-        )
-    }
+    return (
+        <article>
+            <aside>
+                <FriendList users={users} setFriendSelected={setFriendSelected} />
+            </aside>
+            <main>
+                {otherUser ? <Chat user={loggedUser} otherUser={otherUser} /> : 'Seleziona un utente per iniziare a chattare'}
+            </main>
+        </article>
+    )
+}

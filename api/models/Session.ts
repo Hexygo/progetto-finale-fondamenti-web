@@ -5,7 +5,11 @@ const sessionSchema=new mongoose.Schema({
         type:mongoose.Types.ObjectId,
         ref:'User'
     },
-    expires:Date
+    expires:Date,
+    connected:{
+        type:Boolean,
+        default:true
+    }
 })
 
 module.exports=mongoose.model('Session', sessionSchema)

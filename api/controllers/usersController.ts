@@ -29,7 +29,7 @@ module.exports = {
                 //Caso in cui l'utente esiste, lo aggiunge al database, e ritorna una risposta con l'utente appena registrato nel DB
                 User.create({ username: req.body.username, password: req.body.password, friends: [], requests: [] }).then((user) => {
                     Session.create({ user_id: user._id, expires: Date.now() + 12 * 60 * 60 * 1000 }).then(cookie => {
-                        res.cookie('session_token', cookie._id, { expires: cookie.expires })
+                        res.cookie('session_token', cookie._id.toString(), { expires: cookie.expires })
                         const { ['password']: password, ...rest } = user._doc
                         return res.status(200).send(rest)
                     })

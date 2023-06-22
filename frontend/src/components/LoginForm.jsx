@@ -30,17 +30,22 @@ export default function LoginForm({setLoggedUser}){
             data:{
                 username:username,
                 password:sha256(password)
-            },
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json'
             }
         }).then(data=>{
-            console.log(data)
             if(data){
                 setLoggedUser(data.data)
-                socket.auth={userID:data.data._id}
+                const cookieToken=document.cookie
+                    .split("; ")
+                    .find((row) => row.startsWith("session_token="))
+                    ?.split("=")[1]
+                const sessionID=cookieToken
+                if(sessionID){
+                    socket.auth={sessionID:sessionID}
+                }else
+                    socket.auth={userID:data.data._id}
+
                 socket.connect()
+                console.log(socket)
                 navigate("/home")
             }
         }).catch((err)=>{   //Credenziali errate

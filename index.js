@@ -42,38 +42,57 @@ const io = require('socket.io')(app.listen(port, () => console.log('App is liste
 });
 //Middleware Autenticazione Socket
 io.use((socket, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const sessionID = socket.handshake.auth.sessionID;
+    if (sessionID) {
+        const session = yield Session.findById(sessionID).populate({ path: 'user_id', select: '-password' });
+        if (session) {
+            socket.sessionID = session._id.toString();
+            socket.userID = session.user_id._id.toString();
+            socket.user = session.user_id;
+            return next();
+        }
+    }
     const userID = socket.handshake.auth.userID; //ID UTENTE DEL DB
     if (!userID) {
         return next(new Error("Missing UserID"));
     }
-    const session = yield Session.findOne({ user_id: userID }).populate({ path: 'user_id', select: '-password' });
+    const session = yield Session.findOne({ user_id: userID }).populate({ path: 'user_id', select: '-password' }); //La sessione non ha bisogno di essere creata, perché viene creata al login
     socket.sessionID = session._id.toString();
+    socket.userID = userID.toString();
     socket.user = session.user_id;
     return next();
 }));
 io.on("connection", (socket) => {
+    socket.join(socket.userID);
     const users = [];
     for (let [id, socket] of io.of("/").sockets) {
         users.push({
-            userID: id,
+            userID: socket.userID,
             user: socket.user,
         });
     }
     socket.on('message', ({ message, to }) => {
-        socket.to(to).emit('message', {
+        socket.to(to).to(socket.userID).emit('message', {
             message,
-            from: socket.id
+            from: socket.userID,
+            to
         });
     });
-    socket.on('disconnect', () => {
-        socket.broadcast.emit('user disconnected', {
-            userID: socket.id,
-            user: socket.user
-        });
+    socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
+        const matchingSockets = yield io.in(socket.userID).allSockets();
+        const isDisconnected = matchingSockets.size === 0;
+        if (isDisconnected) {
+            socket.broadcast.emit("user disconnected", socket.userID);
+            yield Session.findOneAndUpdate({ user_id: socket.userID }, { connected: false });
+        }
+    }));
+    socket.emit('session', {
+        sessionID: socket.sessionID,
+        userID: socket.userID
     });
     socket.emit("users", users);
     socket.broadcast.emit('user connected', {
-        userID: socket.id,
+        userID: socket.userID,
         user: socket.user
     });
 });

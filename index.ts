@@ -40,39 +40,61 @@ const io=require('socket.io')(app.listen(port, ()=>console.log('App is listening
 
 //Middleware Autenticazione Socket
 io.use(async (socket, next)=>{
+    const sessionID = socket.handshake.auth.sessionID
+    if(sessionID){
+        const session=await Session.findById(sessionID).populate({path:'user_id', select:'-password'})
+        if(session){
+            socket.sessionID=session._id.toString()
+            socket.userID=session.user_id._id.toString()
+            socket.user=session.user_id
+            return next()
+        }
+    }
     const userID=socket.handshake.auth.userID//ID UTENTE DEL DB
     if (!userID){
         return next(new Error("Missing UserID"))
     }
-    const session=await Session.findOne({user_id:userID}).populate({path:'user_id', select:'-password'})
+    const session=await Session.findOne({user_id:userID}).populate({path:'user_id', select:'-password'})//La sessione non ha bisogno di essere creata, perché viene creata al login
     socket.sessionID=session._id.toString()
+    socket.userID=userID.toString()
     socket.user=session.user_id
     return next()
 })
 
 io.on("connection", (socket) => {
+    socket.join(socket.userID)
     const users = [];
     for (let [id, socket] of io.of("/").sockets) {
       users.push({
-        userID: id,
+        userID: socket.userID,
         user: socket.user,
       });
     }
-    socket.on('message',({message, to})=>{
-        socket.to(to).emit('message',{
+
+    socket.on('message',({message, to})=>{//imposta una reazione all'emissione di un messaggio(il cui destinatario è il socket)
+        socket.to(to).to(socket.userID).emit('message',{
             message,
-            from:socket.id
+            from:socket.userID,
+            to
         })
     })
-    socket.on('disconnect', ()=>{
-        socket.broadcast.emit('user disconnected', {
-            userID:socket.id,
-            user:socket.user
-        })
+
+    socket.on('disconnect', async()=>{//reazione alla disconnessione di un utente, avvisa tutti gli utenti che [socket] si è disconnesso
+        const matchingSockets= await io.in(socket.userID).allSockets()
+        const isDisconnected=matchingSockets.size===0
+        if(isDisconnected){
+            socket.broadcast.emit("user disconnected", socket.userID);
+            await Session.findOneAndUpdate({user_id:socket.userID}, {connected:false})
+        }
+    })
+    
+    socket.emit('session', {//Creazione di una sessione
+        sessionID:socket.sessionID,
+        userID:socket.userID
     })
     socket.emit("users", users);
-    socket.broadcast.emit('user connected', {
-        userID:socket.id,
+    socket.broadcast.emit('user connected', {//Avvisa tutti gli utenti che [socket] si è connesso
+        userID:socket.userID,
         user:socket.user
     })
   });

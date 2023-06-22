@@ -1,9 +1,9 @@
 import SignUpForm from "../components/SignupForm";
 
-export default function SignUp(){
+export default function SignUp({setLoggedUser}){
     return (
         <>
-            <SignUpForm />
+            <SignUpForm setLoggedUser={setLoggedUser} />
         </>
     )
 }

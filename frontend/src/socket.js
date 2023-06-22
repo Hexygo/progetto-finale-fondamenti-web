@@ -12,4 +12,15 @@ socket.on("connect_error", (err) => {//Ad errore di connessione logga l'errore
     }
 });
 
+socket.on('session', ({sessionID, userID})=>{
+  const cookieToken=document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("session_token="))
+    ?.split("=")[1]
+  socket.auth={sessionID:cookieToken}
+  console.log(cookieToken)
+  localStorage.setItem('sessionID', cookieToken)//Archivia in locale la sessione
+  socket.userID=userID
+})
+
 export default socket

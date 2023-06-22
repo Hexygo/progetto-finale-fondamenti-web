@@ -9,7 +9,11 @@ const sessionSchema = new mongoose_1.default.Schema({
         type: mongoose_1.default.Types.ObjectId,
         ref: 'User'
     },
-    expires: Date
+    expires: Date,
+    connected: {
+        type: Boolean,
+        default: true
+    }
 });
 module.exports = mongoose_1.default.model('Session', sessionSchema);
 //# sourceMappingURL=Session.js.map
