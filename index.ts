@@ -58,9 +58,16 @@ io.on("connection", (socket) => {
         user: socket.user,
       });
     }
+    socket.on('message',({message, to})=>{
+        socket.to(to).emit('message',{
+            message,
+            from:socket.id
+        })
+    })
     socket.emit("users", users);
     socket.broadcast.emit('user connected', {
         userID:socket.id,
         user:socket.user
     })
   });
+

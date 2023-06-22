@@ -1,5 +1,5 @@
 import { useState } from "react"
-import axios from 'axios'
+import axiosInstance from '../axios'
 import { useNavigate } from "react-router-dom"
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
@@ -24,15 +24,19 @@ export default function LoginForm({setLoggedUser}){
 
     function handleSubmit(e){
         e.preventDefault()
-        axios({
+        axiosInstance({
             method:'post',
             url:'http://localhost:3000/api/users/login',
             data:{
                 username:username,
                 password:sha256(password)
             },
-            withCredentials:true
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            }
         }).then(data=>{
+            console.log(data)
             if(data){
                 setLoggedUser(data.data)
                 socket.auth={userID:data.data._id}

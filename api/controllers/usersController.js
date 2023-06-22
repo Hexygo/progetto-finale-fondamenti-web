@@ -155,7 +155,10 @@ module.exports = {
     },
     cookiesMiddleware: (req, res, next) => {
         if (!req.cookies) //La richiesta non ha cookie, automaticamente respinta
+         {
+            console.log('niente cookie');
             return res.status(401).end();
+        }
         Session.findById(req.cookies['session_token']).exec().then(session => {
             if (session) //cookie valido
                 next();

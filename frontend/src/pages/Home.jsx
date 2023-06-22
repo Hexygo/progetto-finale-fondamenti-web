@@ -6,7 +6,7 @@ import Chat from "../components/Chat"
 export default function Home({loggedUser}){
     const [users, setUsers]=useState([])
     const [otherUser, setOtherUser]=useState()
-    const [friendSelected, setFriendSelected]=useState()
+    const [friendSelected, setFriendSelected]=useState()//contiene il socket, che a sua volta contiene l'utente in friendSelected.user
 
     useEffect(()=>{
         setOtherUser(friendSelected)

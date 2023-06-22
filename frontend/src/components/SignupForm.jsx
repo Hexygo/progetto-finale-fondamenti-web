@@ -1,5 +1,5 @@
 import { useState } from "react"
-import axios from 'axios'
+import axiosInstance from '../axios'
 import { useNavigate } from "react-router-dom"
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
@@ -28,7 +28,7 @@ export default function SignupForm(){
     function handleSubmit(e){
         e.preventDefault() 
         if (username!=='' && password!=='' && cpassword!=='') {
-            axios({
+            axiosInstance({
                 method:'post',
                 url:'http://localhost:3000/api/users/register',
                 data:{

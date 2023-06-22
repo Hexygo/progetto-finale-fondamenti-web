@@ -40,9 +40,9 @@ router.use((req, res, next)=>{
 })
 
 //Sanifica le richieste per evitare crash (whitespace)
-router.use((req,res,next)=>{
-    for(let i in req.body){
-        req.body[i]=req.body[i].trim()
+router.use((req, res, next) => {
+    for (let i in req.body) {
+        req.body[i] = req.body[i].trim()
     }
     next()
 })

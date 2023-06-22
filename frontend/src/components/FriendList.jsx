@@ -4,7 +4,7 @@ import Friend from './Friend'
 export default function FriendList({users, setFriendSelected}){
     return (
         <ul>
-            {users.map(user=>{return <Friend user={user} setFriendSelected={setFriendSelected}/>})}
+            {users.map(user=>{return <Friend key={user.userID} user={user} setFriendSelected={setFriendSelected}/>})}
         </ul>
     )
 }
