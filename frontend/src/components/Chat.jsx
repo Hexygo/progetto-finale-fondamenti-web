@@ -60,7 +60,7 @@ export default function Chat({user, otherUser}){
     return(
         <>  
             <Container>
-                {conversation?conversation.map(el=>{return (<Row><Col md={(el.sender.username===user.username) ? 9 : 0}></Col><Col md={(el.sender.username===user.username) ? 3 : 3}><Card><Card.Body><Card.Text><b>{el.sender.username}:</b>{el.content}</Card.Text></Card.Body></Card></Col><Col md={(el.sender.username===user.username) ? 9 : 0}></Col></Row>)}):''/*TODO:Creare il componente Message*/}
+                {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(el.sender.username===user.username) ? 9 : 0}></Col><Col md={(el.sender.username===user.username) ? 3 : 3}><Card><Card.Body><Card.Text><b>{el.sender.username}:</b>{el.content}</Card.Text></Card.Body></Card></Col><Col md={(el.sender.username===user.username) ? 9 : 0}></Col></Row>)}):''/*TODO:Creare il componente Message*/}
                 <Row className="text-center sticky-bottom">
                     <Col md={5}></Col>
                     <Col md={7}>
