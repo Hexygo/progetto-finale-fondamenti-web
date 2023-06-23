@@ -3,7 +3,6 @@ import socket from "../socket"
 import FriendList from '../components/FriendList'
 import Chat from "../components/Chat"
 import SideBar from "../components/SideBar"
-import FriendRequests from "../components/FriendRequests"
 
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
@@ -12,6 +11,7 @@ import Offcanvas from 'react-bootstrap/Offcanvas'
 
 import axiosInstance from "../axios"
 import { useNavigate } from "react-router-dom"
+import FriendMenu from "../components/FriendMenu"
 
 
 export default function Home({ loggedUser, setLoggedUser }) {
@@ -137,8 +137,8 @@ export default function Home({ loggedUser, setLoggedUser }) {
                     </Col>
                 </Row>
             </Container>
-            <Offcanvas show={friendMenu} onHide={() => { setFriendMenu(false) }}>
-                <FriendRequests friendRequests={loggedUser.requests} />
+            <Offcanvas show={friendMenu} onHide={() => { setFriendMenu(false) }} unmountOnExit>
+                <FriendMenu requests={loggedUser.requests} />
             </Offcanvas>
         </> : ''
     )
