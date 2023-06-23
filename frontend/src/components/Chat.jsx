@@ -60,16 +60,16 @@ export default function Chat({user, otherUser}){
     return(
         <>  
             <Container>
-                {conversation?conversation.map(el=>{return (<Row><Col md={(el.sender.username===user.username) ? 8 : 4}></Col><Col md={(el.sender.username===user.username) ? 4 : 8}><Card style={{ width: '20rem' }}><Card.Body><Card.Text><b>{el.sender.username}:</b>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
-                <Row className="sticky-bottom">
-                    <Col md={3}></Col>
-                    <Col md={6}>
+                {conversation?conversation.map(el=>{return (<Row><Col md={(el.sender.username===user.username) ? 9 : 0}></Col><Col md={(el.sender.username===user.username) ? 3 : 3}><Card><Card.Body><Card.Text><b>{el.sender.username}:</b>{el.content}</Card.Text></Card.Body></Card></Col><Col md={(el.sender.username===user.username) ? 9 : 0}></Col></Row>)}):''/*TODO:Creare il componente Message*/}
+                <Row className="text-center sticky-bottom">
+                    <Col md={5}></Col>
+                    <Col md={7}>
                         <Form onSubmit={handleSubmit}>
-                            <Form.Control type="text" value={message} onChange={e=>setMessage(e.target.value)} placeholder="Scrivi un messaggio..."></Form.Control>
+                            <Form.Control type="text" size="lg" value={message} onChange={e=>setMessage(e.target.value)} placeholder="Scrivi un messaggio..."></Form.Control>
                             <Button className="invisible" type="submit"></Button>
                         </Form>
                     </Col>
-                    <Col md={3}></Col>
+                    <Col md={0}></Col>
                 </Row>
             </Container>
         </> 
