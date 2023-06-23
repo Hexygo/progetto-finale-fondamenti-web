@@ -59,17 +59,15 @@ export default function Chat({user, otherUser}){
 
     return(
         <>  
-            <Container>
-                {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(el.sender.username===user.username) ? 9 : 0}></Col><Col md={(el.sender.username===user.username) ? 3 : 3}><Card><Card.Body><Card.Text><b>{el.sender.username}:</b>{el.content}</Card.Text></Card.Body></Card></Col><Col md={(el.sender.username===user.username) ? 9 : 0}></Col></Row>)}):''/*TODO:Creare il componente Message*/}
+            <Container fluid>
+                {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(user.username===el.sender.username)? {span:4,offset:8} : 4 } ><Card border={(user.username===el.sender.username)? "primary" : "info"}><Card.Body><Card.Text>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
                 <Row className="text-center sticky-bottom">
-                    <Col md={5}></Col>
-                    <Col md={7}>
+                    <Col md={12}>
                         <Form onSubmit={handleSubmit}>
                             <Form.Control type="text" size="lg" value={message} onChange={e=>setMessage(e.target.value)} placeholder="Scrivi un messaggio..."></Form.Control>
                             <Button className="invisible" type="submit"></Button>
                         </Form>
                     </Col>
-                    <Col md={0}></Col>
                 </Row>
             </Container>
         </> 
