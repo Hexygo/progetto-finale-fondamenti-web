@@ -148,8 +148,8 @@ module.exports = {
     },
 
     cookiesMiddleware: (req, res, next) => {//Middleware per la verifica dei cookie
-        if (!req.cookies)//La richiesta non ha cookie, automaticamente respinta
-            {console.log('niente cookie')
+        if (!req.cookies){//La richiesta non ha cookie, automaticamente respinta
+            console.log('niente cookie')
             return res.status(401).end()}
         Session.findById(req.cookies['session_token']).exec().then(session => {
             if (session)//cookie valido
@@ -160,7 +160,7 @@ module.exports = {
     }, 
 
     getUserFromSession: async (req, res)=>{
-        const session=await Session.findById(req.cookies['session_token']).populate({path:'user_id', select:'-password'})
+        const session=await Session.findById(req.cookies['session_token']).populate({path:'user_id', select:'-password', populate:[{path:'requests', select:'username'},{path:'friends', select:'username'}]})
         res.status(200).send(session.user_id)
     }
 }

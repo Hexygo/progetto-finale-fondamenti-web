@@ -163,8 +163,7 @@ module.exports = {
         });
     },
     cookiesMiddleware: (req, res, next) => {
-        if (!req.cookies) //La richiesta non ha cookie, automaticamente respinta
-         {
+        if (!req.cookies) { //La richiesta non ha cookie, automaticamente respinta
             console.log('niente cookie');
             return res.status(401).end();
         }
@@ -176,7 +175,7 @@ module.exports = {
         });
     },
     getUserFromSession: (req, res) => __awaiter(this, void 0, void 0, function* () {
-        const session = yield Session.findById(req.cookies['session_token']).populate({ path: 'user_id', select: '-password' });
+        const session = yield Session.findById(req.cookies['session_token']).populate({ path: 'user_id', select: '-password', populate: [{ path: 'requests', select: 'username' }, { path: 'friends', select: 'username' }] });
         res.status(200).send(session.user_id);
     })
 };

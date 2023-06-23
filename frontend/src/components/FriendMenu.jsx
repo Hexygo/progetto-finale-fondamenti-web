@@ -24,13 +24,11 @@ export default function FriendMenu({ requests }) {
                             <Accordion.Item >
                                 <Accordion.Header>Richieste Di Amicizia</Accordion.Header>
                                 <Accordion.Body>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae maiores sed nam pariatur totam earum delectus fuga alias blanditiis ea perferendis natus architecto, quasi nostrum est laboriosam. Explicabo, odit itaque.
                                     <ListGroup as='ul'>
-                                        {requests.map(request => <FriendRequest request={request} />)}
+                                        {requests.map(request => <FriendRequest key={request._id} request={request} />)}
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
-
                         </Accordion>
                     </ListGroup.Item>
                 </ListGroup>
