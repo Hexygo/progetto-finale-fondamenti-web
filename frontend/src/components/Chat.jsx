@@ -2,6 +2,12 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import socket from "../socket";
 import axiosInstance from '../axios'
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Container from "react-bootstrap/esm/Container";
 
 export default function Chat({user, otherUser}){
     const [message, setMessage]=useState('')
@@ -53,11 +59,19 @@ export default function Chat({user, otherUser}){
 
     return(
         <>  
-            {conversation?conversation.map(el=>{return (<p><b>{el.sender.username}:</b>{el.content}</p>)}):''/*TODO:Creare il componente Message*/}
-            <form onSubmit={handleSubmit}>
-                <input value={message} onChange={e=>setMessage(e.target.value)} placeholder="Scrivi un messaggio..."></input>
-                <button type="submit"></button>
-            </form>
+            <Container>
+                {conversation?conversation.map(el=>{return (<Row><Col md={(el.sender.username===user.username) ? 8 : 4}></Col><Col md={(el.sender.username===user.username) ? 4 : 8}><Card style={{ width: '20rem' }}><Card.Body><Card.Text><b>{el.sender.username}:</b>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
+                <Row className="sticky-bottom">
+                    <Col md={3}></Col>
+                    <Col md={6}>
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Control type="text" value={message} onChange={e=>setMessage(e.target.value)} placeholder="Scrivi un messaggio..."></Form.Control>
+                            <Button className="invisible" type="submit"></Button>
+                        </Form>
+                    </Col>
+                    <Col md={3}></Col>
+                </Row>
+            </Container>
         </> 
     )
 }

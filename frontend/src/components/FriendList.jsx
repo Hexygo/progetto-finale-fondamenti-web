@@ -14,7 +14,7 @@ export default function FriendList({users, setFriendSelected}){
     }, [search, users])
 
     return (
-        <ListGroup as='ul' variant="flush">
+        <ListGroup as='ul' variant="flush" className="sticky-top">
             <SearchBar search={search} setSearch={setSearch}/>
             {filteredUsers.map(user=>{return <Friend key={user.userID} user={user} setFriendSelected={setFriendSelected}/>})/*Compone la lista di amici*/}
         </ListGroup>

@@ -8,7 +8,7 @@ import { faRightFromBracket, faUserPlus } from "@fortawesome/free-solid-svg-icon
 
 export default function SideBar({ handleLogout, setFriendMenu }) {
     return (
-        <Nav as='ul' navbar className="flex-column">
+        <Nav as='ul' navbar className="flex-column sticky-top">
             <Nav.Link className='text-secondary' as='li' onClick={() => setFriendMenu(true)}>
                     <FontAwesomeIcon className={'fa-2x'} icon={faUserPlus} />
             </Nav.Link>

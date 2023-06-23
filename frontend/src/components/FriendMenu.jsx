@@ -11,7 +11,7 @@ export default function FriendMenu({ requests }) {
 
     return (//Conterrà il menu con le richieste di amicizia in attesa, e la barra per inviare ricerche di amicizia
         <>
-            <Offcanvas.Header className="justify-content-end" closeButton />
+            <Offcanvas.Header className="justify-content-end sticky-top" closeButton />
 
             <Offcanvas.Body>
                 <ListGroup variant="flush">
