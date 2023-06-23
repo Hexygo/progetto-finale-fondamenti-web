@@ -11,7 +11,7 @@ function App() {
   return (
       <Routes>
         <Route path="/" element={<Login setLoggedUser={setLoggedUser}/>}/>
-        <Route path="/home" element={<Home loggedUser={loggedUser}/>}/>
+        <Route path="/home" element={<Home loggedUser={loggedUser} setLoggedUser={setLoggedUser}/>}/>
         <Route path="/signup" element={<SignUp setLoggedUser={setLoggedUser}/>}/>
       </Routes>
   );

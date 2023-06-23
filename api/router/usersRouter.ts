@@ -31,4 +31,6 @@ router.post('/refuse', usersController.refuseRequest)
 
 router.post('/logout', usersController.logout)
 
+router.get('/usersession', usersController.getUserFromSession)
+
 module.exports=router

@@ -50,7 +50,7 @@ export default function SignupForm({setLoggedUser}){
                         socket.auth = { userID: data.data._id }
 
                     socket.connect()
-                    console.log(socket)
+                    localStorage.setItem('sessionID', sessionID)
                     navigate("/home")
                 }
             }).catch((err)=>{   //Utente già creato su DB, prompt al login

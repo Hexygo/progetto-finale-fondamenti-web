@@ -157,5 +157,10 @@ module.exports = {
             else
                 return res.status(401).end()//cookie non valido
         })
+    }, 
+
+    getUserFromSession: async (req, res)=>{
+        const session=await Session.findById(req.cookies['session_token']).populate({path:'user_id', select:'-password'})
+        res.status(200).send(session.user_id)
     }
 }
