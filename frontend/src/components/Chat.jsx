@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import Container from "react-bootstrap/esm/Container";
+import Container from "react-bootstrap/Container";
 
 export default function Chat({user, otherUser}){
     const [message, setMessage]=useState('')
@@ -58,9 +58,13 @@ export default function Chat({user, otherUser}){
     })
 
     return(
-        <>  
-            <Container fluid>
-                {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(user.username===el.sender.username)? {span:4,offset:8} : 4 } ><Card border={(user.username===el.sender.username)? "primary" : "info"}><Card.Body><Card.Text>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
+            <Container className="vh-100 position-relative">
+                <Row>{otherUser.user.username}</Row>
+                <Row>
+                    <Container className="overflow-y-auto" style={{height:'90vh'}/*RICORDA DI CAMBIARE QUESTO VALORE SE VARIANO LE DIMENSIONI DELLA BARRA PER INVIARE UN MESSAGGIO E DELLO USERNAME*/}>
+                        {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(user.username===el.sender.username)? {span:4,offset:8} : 4 } ><Card border={(user.username===el.sender.username)? "primary" : "info"}><Card.Body><Card.Text>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
+                    </Container>
+                </Row>
                 <Row className="text-center sticky-bottom">
                     <Col md={12}>
                         <Form onSubmit={handleSubmit}>
@@ -70,6 +74,5 @@ export default function Chat({user, otherUser}){
                     </Col>
                 </Row>
             </Container>
-        </> 
     )
 }
