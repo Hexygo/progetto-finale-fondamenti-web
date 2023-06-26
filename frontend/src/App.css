@@ -37,6 +37,11 @@
   }
 }
 
+body{
+  background-color: #181b21 !important;
+  color: #f4f7f5 !important;
+}
+
 .accordion-button:focus{
   box-shadow: none !important;
   border-color: rgb(0 0 0 .125);
