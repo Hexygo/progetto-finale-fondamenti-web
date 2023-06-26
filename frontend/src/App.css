@@ -38,8 +38,7 @@
 }
 
 body{
-  background-color: #181b21 !important;
-  color: #f4f7f5 !important;
+  background-color: #000000 !important;
 }
 
 .accordion-button:focus{
@@ -48,7 +47,7 @@ body{
 }
 
 .accordion-button:not(.collapsed) {
-  color: rgb(33, 37, 41) !important;
-  background-color: #fff !important;
+  color:rgb(173, 181, 189) !important;
+  background-color: #212529 !important;
   box-shadow: none !important;
 }

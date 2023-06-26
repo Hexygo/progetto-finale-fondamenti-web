@@ -130,9 +130,6 @@ export default function Home({ loggedUser, setLoggedUser }) {
                         <SideBar handleLogout={handleLogout} friendMenu={friendMenu} addFriend={addFriend} setFriendMenu={setFriendMenu} />
                     </Col>
                     <Col>
-                        <Offcanvas variant='dark' className="ps-5" show={friendMenu} onHide={() => { setFriendMenu(false) }} unmountOnExit>
-                            <FriendMenu requests={loggedUser.requests} friendMenu={friendMenu}/>
-                        </Offcanvas>
                         <FriendList users={users} setFriendSelected={setFriendSelected} />
                     </Col>
                     <Col xs='9'>
@@ -140,6 +137,9 @@ export default function Home({ loggedUser, setLoggedUser }) {
                     </Col>
                 </Row>
             </Container>
+            <Offcanvas className="ps-5 rounded-4" show={friendMenu} onHide={() => { setFriendMenu(false) }} unmountOnExit data-bs-theme="dark">
+                <FriendMenu requests={loggedUser.requests} friendMenu={friendMenu}/>
+            </Offcanvas>
 
         </> : ''
     )

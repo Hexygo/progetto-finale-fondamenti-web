@@ -11,7 +11,7 @@ export default function FriendMenu({ requests, friendMenu }) {
 
     return (//Conterrà il menu con le richieste di amicizia in attesa, e la barra per inviare ricerche di amicizia
         <>
-            <Offcanvas.Header className="justify-content-end sticky-top" closeButton closeVariant={friendMenu?'':"white"}/>
+            <Offcanvas.Header className="justify-content-end sticky-top" closeButton closeVariant={friendMenu?'':"white"}/>{/*Valutare se fare il close button a mano per poterlo far sparire quando viene cliccato*/}
 
             <Offcanvas.Body>
                 <ListGroup variant="flush">
@@ -20,11 +20,11 @@ export default function FriendMenu({ requests, friendMenu }) {
                         <SearchBar search={search} setSearch={setSearch} />
                     </ListGroup.Item>
                     <ListGroup.Item>
-                        <Accordion flush >
+                        <Accordion data-bs-theme="dark" flush >
                             <Accordion.Item >
                                 <Accordion.Header>Richieste Di Amicizia</Accordion.Header>
                                 <Accordion.Body>
-                                    <ListGroup as='ul'>
+                                    <ListGroup variant='flush' as='ul' data-bs-theme="dark">
                                         {requests.map(request => <FriendRequest key={request._id} request={request} />)}
                                     </ListGroup>
                                 </Accordion.Body>
