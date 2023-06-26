@@ -6,12 +6,12 @@ import SearchBar from "./SearchBar";
 import ListGroup from 'react-bootstrap/ListGroup'
 import Accordion from 'react-bootstrap/Accordion'
 
-export default function FriendMenu({ requests }) {
+export default function FriendMenu({ requests, friendMenu }) {
     const [search, setSearch] = useState('')
 
     return (//Conterrà il menu con le richieste di amicizia in attesa, e la barra per inviare ricerche di amicizia
         <>
-            <Offcanvas.Header className="justify-content-end sticky-top" closeButton />
+            <Offcanvas.Header className="justify-content-end sticky-top" closeButton closeVariant={friendMenu?'':"white"}/>
 
             <Offcanvas.Body>
                 <ListGroup variant="flush">

@@ -10,13 +10,12 @@ import Row from "react-bootstrap/Row";
 export default function FriendRequest({ request }) {
     let active = false;
     return (
-        <ListGroupItem fluid as='li' className="bg-light">
-            <Container fluid>
-                <Row>
-                    <Col xs='7'>
+        <ListGroupItem fluid as='li' className="bg-light container-fluid position-relative px-3" style={{height:'50px'}}>
+                <Row className="d-flex">
+                    <Col xs='7' className="d-flex position-absolute top-50 translate-middle-y">
                         {request.username}
                     </Col>
-                    <Col >
+                    <Col className="d-flex position-absolute top-50 end-0 justify-content-end translate-middle-y">
                         <Button variant="light" className="rounded-pill border-0" onClick={() => active = !active} active={active}>
                             <FontAwesomeIcon className="text-success" icon={faCheck} />
                         </Button>
@@ -25,7 +24,6 @@ export default function FriendRequest({ request }) {
                         </Button>
                     </Col>
                 </Row>
-            </Container>
         </ListGroupItem>
     )
 }

@@ -61,7 +61,7 @@ export default function Chat({user, otherUser}){
             <Container className="vh-100 position-relative">
                 <Row>{otherUser.user.username}</Row>
                 <Row>
-                    <Container className="overflow-y-auto" style={{height:'90vh'}/*RICORDA DI CAMBIARE QUESTO VALORE SE VARIANO LE DIMENSIONI DELLA BARRA PER INVIARE UN MESSAGGIO E DELLO USERNAME*/}>
+                    <Container className="overflow-y-auto" style={{height:'80vh'}/*RICORDA DI CAMBIARE QUESTO VALORE SE VARIANO LE DIMENSIONI DELLA BARRA PER INVIARE UN MESSAGGIO E DELLO USERNAME*/}>
                         {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(user.username===el.sender.username)? {span:4,offset:8} : 4 } ><Card border={(user.username===el.sender.username)? "primary" : "info"}><Card.Body><Card.Text>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
                     </Container>
                 </Row>

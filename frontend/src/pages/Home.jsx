@@ -126,12 +126,12 @@ export default function Home({ loggedUser, setLoggedUser }) {
         logged ? <>
             <Container fluid className="vh-100">
                 <Row className="h-100">
-                    <Col xs='1'>
-                        <SideBar handleLogout={handleLogout} addFriend={addFriend} setFriendMenu={setFriendMenu} />
+                    <Col xs='1' className="p-0">
+                        <SideBar handleLogout={handleLogout} friendMenu={friendMenu} addFriend={addFriend} setFriendMenu={setFriendMenu} />
                     </Col>
                     <Col>
                         <Offcanvas show={friendMenu} onHide={() => { setFriendMenu(false) }} unmountOnExit>
-                            <FriendMenu requests={loggedUser.requests} />
+                            <FriendMenu requests={loggedUser.requests} friendMenu={friendMenu}/>
                         </Offcanvas>
                         <FriendList users={users} setFriendSelected={setFriendSelected} />
                     </Col>
