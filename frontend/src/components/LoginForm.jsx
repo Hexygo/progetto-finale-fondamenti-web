@@ -100,20 +100,21 @@ export default function LoginForm({setLoggedUser}){
                 </Form>                
             </Container>
             <Modal centered show={modal} onHide={function modal(){setModal(false)}}> 
-                    <Modal.Header >
-                        <Modal.Title>Credenziali errate</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        Se non hai ancora creato un account
-                        <Button variant="link" type="button" 
-                            onClick={   function goToLogin(e){
-                                            e.preventDefault()
-                                            navigate("/signup")
-                                        }}>
+                <Modal.Header >
+                    <Modal.Title>Credenziali errate</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Se non hai ancora creato un account
+                    <Button variant="link" type="button" 
+                        onClick={
+                            (e)=>{
+                                e.preventDefault()
+                                navigate("/signup")
+                            }}>
                             clicca qui!
-                        </Button>
-                    </Modal.Body>
-                </Modal> 
+                    </Button>
+                </Modal.Body>
+            </Modal> 
         </>
     )
 }
