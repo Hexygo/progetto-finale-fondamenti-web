@@ -22,6 +22,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
     const [friendMenu, setFriendMenu] = useState()
     const [logged, setLogged] = useState(false)
     const [requests, setRequests] =useState([])
+    const [friends, setFriends]=useState([])
 
     useEffect(() => {
         const session = localStorage.getItem('sessionID')
@@ -41,6 +42,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
             console.log(data)
             setLoggedUser(data.data)
             setRequests(data.data.requests)
+            setFriends(data.data.friends)
             setLogged(true)
             socket.auth = { sessionID: session }}
         getUser()
@@ -83,6 +85,17 @@ export default function Home({ loggedUser, setLoggedUser }) {
         socket.on('friend request', request=>{
             setRequests([...requests, request.sender])
         })
+
+        socket.on('friend request accepted',(request)=>{
+            console.log(request)
+            setRequests(requests.filter(r=>r._id!==request.user._id))
+            setFriends([...friends, request])
+        })
+
+        socket.on('friend request rejected',(request)=>{
+            console.log(request)
+            setRequests(requests.filter(r=>r._id!==request.user._id))
+        })
         socket.connect()
     }, [loggedUser])
 
@@ -102,36 +115,12 @@ export default function Home({ loggedUser, setLoggedUser }) {
         })
     }
 
-    const addFriend = (friend) => {//Contiene lo Username dell'utente da cercare
-        axiosInstance({
-            method: 'get',
-            url: 'http://localhost:3000/api/users/username/' + friend,
-        }).then(data => {//Contiene l'utente da aggiungere
-            axiosInstance({
-                method: 'post',
-                url: 'http://localhost:3000/api/users/addFriend',
-                data: {
-                    sender: loggedUser._id,
-                    receiver: data.data._id
-                }
-            }).then(
-                console.log('richiesta inviata con successo')//Implementare quindi un messaggio di conferma all'utente, e la gestione su socket della cosa(socket.to().emit('friend request'))
-            ).catch(err => {
-                console.log(err)//c'è tutta una logica da implementare in questo caso, data la quantità di errori lanciati da questo endpoint
-            })
-        }).catch(err => {
-            if (err.response.status === 404) {
-                console.log('utente non trovato')//Implementare quindi un avviso all'utente
-            }
-        })
-    }
-
     return (
         logged ? <>
             <Container fluid className="vh-100">
                 <Row className="h-100">
                     <Col xs='1' className="p-0" style={{width:'60px'}}>
-                        <SideBar handleLogout={handleLogout} friendMenu={friendMenu} addFriend={addFriend} setFriendMenu={setFriendMenu} />
+                        <SideBar handleLogout={handleLogout} friendMenu={friendMenu} setFriendMenu={setFriendMenu} />
                     </Col>
                     <Col>
                         <FriendList users={users} setFriendSelected={setFriendSelected} />
@@ -142,7 +131,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
                 </Row>
             </Container>
             <Offcanvas className="ps-5 rounded-4" show={friendMenu} onHide={() => { setFriendMenu(false) }} unmountOnExit data-bs-theme="dark">
-                <FriendMenu requests={requests} friendMenu={friendMenu} currentUser={loggedUser}/>
+                <FriendMenu requests={requests} friendMenu={friendMenu} currentUser={loggedUser} />
             </Offcanvas>
         </> : ''
     )

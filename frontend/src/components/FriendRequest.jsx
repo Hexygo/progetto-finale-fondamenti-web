@@ -5,17 +5,47 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import ListGroupItem from "react-bootstrap/esm/ListGroupItem";
 import Row from "react-bootstrap/Row";
+import axiosInstance from "../axios";
+import socket from "../socket";
 
-export default function FriendRequest({ request, currentUser }) {
+export default function FriendRequest({ request, currentUser, setRequests, setFriends }) {
     let active = false;//Introdotto per mantenere una animazione del pulsante, come feedback all'utente
 
     const handleAccept=()=>{
-        console.log(currentUser, 'sta accettando la richiesta di', request._id)
+        console.log(currentUser._id, 'sta accettando la richiesta di', request._id)
+        axiosInstance({
+            method:'post',
+            url:'http://localhost:3000/api/users/accept',
+            data:{
+                user:currentUser._id,
+                sender:request._id
+            }
+        }).then(data=>{
+            console.log(data.data._id)
+            socket.emit('friend request accepted',{
+                user:currentUser,
+                to:request._id
+            })
+        })
         
     }
 
     const handleReject=()=>{
-        console.log(currentUser, 'sta rifiutando la richiesta di', request._id)
+        console.log(currentUser._id, 'sta rifiutando la richiesta di', request._id)
+        axiosInstance({
+            method:'post',
+            url:'http://localhost:3000/api/users/refuse',
+            data:{
+                user:currentUser._id,
+                sender:request._id
+            }
+        }).then(data=>{
+            console.log(data.data._id)
+            socket.emit('friend request rejected',{
+                user:currentUser,
+                to:request._id
+            })
+        })
     }
 
     return (

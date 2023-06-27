@@ -87,6 +87,22 @@ io.on("connection", (socket) => {
         })
     })
 
+    socket.on('friend request accepted', ({user, to})=>{
+        socket.to(to).to(socket.userID).emit('friend request accepted',{
+            from:socket.userID,
+            user,
+            to
+        })
+    })
+
+    socket.on('friend request rejected', ({user, to})=>{
+        socket.to(to).to(socket.userID).emit('friend request rejected',{
+            from:socket.userID,
+            user,
+            to
+        })
+    })
+
     socket.on('disconnect', async()=>{//reazione alla disconnessione di un utente, avvisa tutti gli utenti che [socket] si è disconnesso
         const matchingSockets= await io.in(socket.userID).allSockets()
         const isDisconnected=matchingSockets.size===0

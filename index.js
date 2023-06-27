@@ -85,6 +85,20 @@ io.on("connection", (socket) => {
             to: receiver
         });
     });
+    socket.on('friend request accepted', ({ user, to }) => {
+        socket.to(to).to(socket.userID).emit('friend request accepted', {
+            from: socket.userID,
+            user,
+            to
+        });
+    });
+    socket.on('friend request rejected', ({ user, to }) => {
+        socket.to(to).to(socket.userID).emit('friend request rejected', {
+            from: socket.userID,
+            user,
+            to
+        });
+    });
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
         const matchingSockets = yield io.in(socket.userID).allSockets();
         const isDisconnected = matchingSockets.size === 0;

@@ -102,7 +102,7 @@ module.exports = {
         });
     },
     //Accetta la richiesta di amicizia
-    acceptRequest: (req, res) => {
+    acceptRequest: (req, res) => __awaiter(this, void 0, void 0, function* () {
         //Cerca l'utente che deve accettare le richieste
         User.findById(req.body.user).exec().then((user) => {
             //Optional TODO: Controllare che il sender esista
@@ -112,21 +112,18 @@ module.exports = {
             user.friends.push(req.body.sender);
             user.save();
         });
-        User.findById(req.body.sender).exec().then((user) => {
-            //Aggiunge l'utente alla lista amici del mittente della richiesta
-            user.friends.push(req.body.user);
-            user.save();
-        });
-        return res.status(200).send("Richiesta accettata");
-    },
+        const user = yield User.findById(req.body.sender).select('-password').exec();
+        user.friends.push(req.body.user);
+        user.save();
+        return res.status(200).send(user);
+    }),
     //Rifiuta la richiesta di amicizia
-    refuseRequest: (req, res) => {
-        User.findById(req.body.user).exec().then((user) => {
-            user.requests = user.requests.filter(r => r != req.body.sender);
-            user.save();
-        });
-        return res.status(200).send("Richiesta rifiutata");
-    },
+    refuseRequest: (req, res) => __awaiter(this, void 0, void 0, function* () {
+        const user = yield User.findById(req.body.user).select('-password').exec();
+        user.requests = user.requests.filter(r => r != req.body.sender);
+        user.save();
+        return res.status(200).send(user);
+    }),
     //Logga un utente, se le sue credenziali sono corrette
     //Problema: la password è in plain text, (crittografia?)
     login: (req, res) => {

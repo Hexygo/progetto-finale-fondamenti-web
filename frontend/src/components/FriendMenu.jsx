@@ -76,7 +76,7 @@ export default function FriendMenu({ requests, friendMenu, currentUser }) {
                                 <Accordion.Header>Richieste Di Amicizia</Accordion.Header>
                                 <Accordion.Body>
                                     <ListGroup variant='flush' as='ul' data-bs-theme="dark">
-                                        {requests.map(request => <FriendRequest key={request._id} request={request} currentUser={currentUser._id}/>)}
+                                        {requests.map(request => <FriendRequest key={request._id} request={request} currentUser={currentUser}/>)}
                                     </ListGroup>
                                 </Accordion.Body>
                             </Accordion.Item>
