@@ -40,7 +40,6 @@ export default function Chat({user, otherUser}){
             },
             withCredentials:true
         }).then(data=>{
-            console.log(otherUser.userID)
             socket.emit('message', {
                 message:data.data,
                 to:otherUser.userID
@@ -59,9 +58,9 @@ export default function Chat({user, otherUser}){
 
     return(
             <Container className="vh-100 position-relative">
-                <Row className="justify-content-center display-6" style={{height:'50px'}}>{otherUser.user.username}</Row>
+                <Row className="justify-content-center display-6 rounded-top border" style={{height:'50px'}}>{otherUser.user.username}</Row>
                 <Row>
-                    <Container className="overflow-y-auto d-flex flex-column-reverse border rounded" style={{height:'83vh'}/*RICORDA DI CAMBIARE QUESTO VALORE SE VARIANO LE DIMENSIONI DELLA BARRA PER INVIARE UN MESSAGGIO E DELLO USERNAME*/}>
+                    <Container className="overflow-y-auto d-flex flex-column-reverse border rounded-bottom" style={{height:'80vh'}/*RICORDA DI CAMBIARE QUESTO VALORE SE VARIANO LE DIMENSIONI DELLA BARRA PER INVIARE UN MESSAGGIO E DELLO USERNAME*/}>
                         <div>{/*Questo div permette al contenuto di non venire rovesciato*/}
                             {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(user.username===el.sender.username)? {span:4,offset:8} : 4 } ><Card border={(user.username===el.sender.username)? "primary" : "info"}><Card.Body><Card.Text>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
                         </div>

@@ -21,6 +21,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
     const navigate = useNavigate()
     const [friendMenu, setFriendMenu] = useState()
     const [logged, setLogged] = useState(false)
+    const [requests, setRequests] =useState([])
 
     useEffect(() => {
         const session = localStorage.getItem('sessionID')
@@ -39,13 +40,13 @@ export default function Home({ loggedUser, setLoggedUser }) {
             })
             console.log(data)
             setLoggedUser(data.data)
+            setRequests(data.data.requests)
             setLogged(true)
             socket.auth = { sessionID: session }}
         getUser()
     }, [])
 
     useEffect(() => {
-        console.log(socket)
         socket.on('users', (users) => {//Evento emesso dal server, che comunica tutti gli utenti collegati in un dato momento
             users.forEach(user => {
                 user.self = user.userID === socket.userID
@@ -54,8 +55,8 @@ export default function Home({ loggedUser, setLoggedUser }) {
             setUsers(users)
         })
 
-        socket.on('user connected', (connectedUser) => {
-            let found = false//Evento emesso dal server quando un utente si connnette
+        socket.on('user connected', (connectedUser) => {//Evento emesso dal server quando un utente si connnette
+            let found = false
             setUsers(users.map(user => {
                 if (user.userID === connectedUser.userID) {
                     found = true
@@ -78,7 +79,10 @@ export default function Home({ loggedUser, setLoggedUser }) {
                 return user
             }))
         })
-        console.log(loggedUser)
+
+        socket.on('friend request', request=>{
+            setRequests([...requests, request.sender])
+        })
         socket.connect()
     }, [loggedUser])
 
@@ -138,7 +142,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
                 </Row>
             </Container>
             <Offcanvas className="ps-5 rounded-4" show={friendMenu} onHide={() => { setFriendMenu(false) }} unmountOnExit data-bs-theme="dark">
-                <FriendMenu requests={loggedUser.requests} friendMenu={friendMenu}/>
+                <FriendMenu requests={requests} friendMenu={friendMenu} currentUser={loggedUser}/>
             </Offcanvas>
         </> : ''
     )

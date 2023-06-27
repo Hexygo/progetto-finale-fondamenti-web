@@ -78,6 +78,13 @@ io.on("connection", (socket) => {
             to
         });
     });
+    socket.on('friend request', ({ sender, receiver }) => {
+        socket.to(receiver).to(socket.userID).emit('friend request', {
+            from: socket.userID,
+            sender,
+            to: receiver
+        });
+    });
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
         const matchingSockets = yield io.in(socket.userID).allSockets();
         const isDisconnected = matchingSockets.size === 0;

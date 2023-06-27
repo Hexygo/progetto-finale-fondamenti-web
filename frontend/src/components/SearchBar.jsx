@@ -7,12 +7,12 @@ import Form from 'react-bootstrap/Form'
 import { faArrowLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function SearchBar({ search, setSearch }) {
+export default function SearchBar({ search, setSearch, submitHandler }) {
     const [searchIcon, setSearchIcon] = useState(true)
 
     const handleSubmit=(e)=>{
         e.preventDefault()
-        console.log('submitted...')
+        submitHandler(search)
     }
 
     return (

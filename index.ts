@@ -71,11 +71,19 @@ io.on("connection", (socket) => {
       });
     }
 
-    socket.on('message',({message, to})=>{//imposta una reazione all'emissione di un messaggio(il cui destinatario è il socket)
+    socket.on('message',({message, to})=>{//imposta una reazione all'emissione di un messaggio(il cui mittente è il socket)
         socket.to(to).to(socket.userID).emit('message',{
             message,
             from:socket.userID,
             to
+        })
+    })
+
+    socket.on('friend request', ({sender, receiver})=>{
+        socket.to(receiver).to(socket.userID).emit('friend request',{
+            from:socket.userID,
+            sender,
+            to:receiver
         })
     })
 
