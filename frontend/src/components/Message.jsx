@@ -5,9 +5,9 @@ export default function Message({user, el}){
     return(
         <>
         <Row className="m-2">
-            <Col md={(user.username===el.sender.username)? {span:4,offset:8} : 4 } >
-                <Card border={(user.username===el.sender.username)? "primary" : "info"}>
-                    <Card.Body>
+            <Col md={(user.username===el.sender.username)? {span:5,offset:7} : 5 } className= {(user.username===el.sender.username)? "d-flex justify-content-end" : "d-flex justify-content-start"}>
+                <Card style={{minWidth:'100px', width:'fit-content', backgroundColor:(user.username===el.sender.username)?'#9ACBAE':'#BF9DCB', color:'#212529' }} className='rounded-4'>
+                    <Card.Body className='py-2'>
                         <Card.Text className='mb-0'>
                             {el.content}                                
                         </Card.Text> 

@@ -70,13 +70,13 @@ export default function FriendMenu({ requests, friendMenu, currentUser }) {
             <Offcanvas.Body>
                 <ListGroup variant="flush">
                     <ListGroup.Item className="text-center">
-                        <div className="h3" >Aggiungi un Amico</div>
+                        <div className="h3" style={{fontFamily:'Roboto Condensed, sans-serif'}}>Aggiungi un Amico</div>
                         <SearchBar search={search} setSearch={setSearch} submitHandler={submitHandler}/>
                     </ListGroup.Item>
                     <ListGroup.Item>
                         <Accordion data-bs-theme="dark" flush >
                             <Accordion.Item >
-                                <Accordion.Header>Richieste Di Amicizia</Accordion.Header>
+                                <Accordion.Header style={{fontFamily:'Roboto Condensed, sans-serif'}}>Richieste Di Amicizia</Accordion.Header>
                                 <Accordion.Body>
                                     <ListGroup variant='flush' as='ul' data-bs-theme="dark">
                                         {requests.map(request => <FriendRequest key={request._id} request={request} currentUser={currentUser}/>)}

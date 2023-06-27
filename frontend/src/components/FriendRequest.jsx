@@ -21,7 +21,6 @@ export default function FriendRequest({ request, currentUser, setRequests, setFr
                 sender:request._id
             }
         }).then(data=>{
-            console.log(data.data._id)
             socket.emit('friend request accepted',{
                 user:currentUser,
                 to:request._id
@@ -40,7 +39,7 @@ export default function FriendRequest({ request, currentUser, setRequests, setFr
                 sender:request._id
             }
         }).then(data=>{
-            console.log(data.data._id)
+            //setRequests(requests.filter(r=>))
             socket.emit('friend request rejected',{
                 user:currentUser,
                 to:request._id
