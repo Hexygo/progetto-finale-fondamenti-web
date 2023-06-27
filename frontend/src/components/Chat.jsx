@@ -6,8 +6,8 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
 import Container from "react-bootstrap/Container";
+import Message from "./Message";
 
 export default function Chat({user, otherUser}){
     const [message, setMessage]=useState('')
@@ -62,7 +62,16 @@ export default function Chat({user, otherUser}){
                 <Row>
                     <Container className="overflow-y-auto d-flex flex-column-reverse border rounded-bottom" style={{height:'80vh'}/*RICORDA DI CAMBIARE QUESTO VALORE SE VARIANO LE DIMENSIONI DELLA BARRA PER INVIARE UN MESSAGGIO E DELLO USERNAME*/}>
                         <div>{/*Questo div permette al contenuto di non venire rovesciato*/}
-                            {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(user.username===el.sender.username)? {span:4,offset:8} : 4 } ><Card border={(user.username===el.sender.username)? "primary" : "info"}><Card.Body><Card.Text>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
+                            {conversation?conversation.map((el,index,thearray)=>{
+                                if(index===0){
+                                    return <><div className="lead text-center border-bottom mb-4">{new Date(el.time).toLocaleDateString()}</div><Message key={el.time} user={user} el={el}/></>
+                                }
+                                else{
+                                    return new Date(thearray[index].time).toLocaleDateString()!=new Date(thearray[index-1].time).toLocaleDateString() ?
+                                      <><div className="lead text-center border-bottom mb-4">{new Date(el.time).toLocaleDateString()}</div><Message key={el.time} user={user} el={el}/></> :
+                                      <Message key={el.time} user={user} el={el}/>
+                                }
+                                }):''/*TODO:Creare il componente Message*/}
                         </div>
                     </Container>
                 </Row>
