@@ -7,9 +7,12 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import Accordion from 'react-bootstrap/Accordion'
 import axiosInstance from "../axios";
 import socket from "../socket";
+import Modal from 'react-bootstrap/Modal';
 
 export default function FriendMenu({ requests, friendMenu, currentUser }) {
     const [search, setSearch] = useState('')
+    const [modal1, setModal1] = useState(false)
+    const [modal2, setModal2] = useState(false)
 
     const submitHandler=(receiver)=>{
         axiosInstance({
@@ -17,11 +20,11 @@ export default function FriendMenu({ requests, friendMenu, currentUser }) {
             url:'http://localhost:3000/api/users/username/'+receiver
         }).then((data)=>{
             if(currentUser.friends.map(e=>e._id).includes(data.data._id)){//Richiesta d'amicizia da annullare, poiché i due utenti sono già amici
-                console.log('siete già amici')
+                setModal1(true)
                 return
             }
             if(currentUser.requests.map(e=>e._id).includes(data.data._id)){//Richiesta d'amicizia pending trovata
-                console.log("hai già una richiesta d'amicizia in attesa")
+                setModal2(true)
                 return
             }
             const rec=data.data._id
@@ -84,6 +87,22 @@ export default function FriendMenu({ requests, friendMenu, currentUser }) {
                     </ListGroup.Item>
                 </ListGroup>
             </Offcanvas.Body>
+            <Modal centered show={modal1} onHide={function(){setModal1(false)}}> 
+                    <Modal.Header >
+                        <Modal.Title>L'utente è già tuo amico</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Stai cercando di inviare una richiesta di amicizia ad un utente già nella tua lista amici!
+                    </Modal.Body>
+                </Modal>
+                <Modal centered show={modal2} onHide={function(){setModal2(false)}}> 
+                    <Modal.Header >
+                        <Modal.Title>Richiesta già inviata</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Hai già inviato una richiesta di amicizia all'utente, bisogna attendere che la richiesta venga accettata o rifiutata!
+                    </Modal.Body>
+                </Modal>
         </>
     )
 }
