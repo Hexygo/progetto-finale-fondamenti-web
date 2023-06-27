@@ -59,13 +59,15 @@ export default function Chat({user, otherUser}){
 
     return(
             <Container className="vh-100 position-relative">
-                <Row>{otherUser.user.username}</Row>
+                <Row className="justify-content-center display-6" style={{height:'50px'}}>{otherUser.user.username}</Row>
                 <Row>
-                    <Container className="overflow-y-auto" style={{height:'80vh'}/*RICORDA DI CAMBIARE QUESTO VALORE SE VARIANO LE DIMENSIONI DELLA BARRA PER INVIARE UN MESSAGGIO E DELLO USERNAME*/}>
-                        {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(user.username===el.sender.username)? {span:4,offset:8} : 4 } ><Card border={(user.username===el.sender.username)? "primary" : "info"}><Card.Body><Card.Text>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
+                    <Container className="overflow-y-auto d-flex flex-column-reverse border rounded" style={{height:'83vh'}/*RICORDA DI CAMBIARE QUESTO VALORE SE VARIANO LE DIMENSIONI DELLA BARRA PER INVIARE UN MESSAGGIO E DELLO USERNAME*/}>
+                        <div>{/*Questo div permette al contenuto di non venire rovesciato*/}
+                            {conversation?conversation.map(el=>{return (<Row className="m-2"><Col md={(user.username===el.sender.username)? {span:4,offset:8} : 4 } ><Card border={(user.username===el.sender.username)? "primary" : "info"}><Card.Body><Card.Text>{el.content}</Card.Text></Card.Body></Card></Col></Row>)}):''/*TODO:Creare il componente Message*/}
+                        </div>
                     </Container>
                 </Row>
-                <Row className="text-center sticky-bottom">
+                <Row className="text-center sticky-bottom pt-2">
                     <Col md={12}>
                         <Form onSubmit={handleSubmit}>
                             <Form.Control type="text" size="lg" value={message} onChange={e=>setMessage(e.target.value)} placeholder="Scrivi un messaggio..."></Form.Control>

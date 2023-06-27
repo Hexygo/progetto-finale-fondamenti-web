@@ -38,8 +38,10 @@
 }
 
 body{
-  background-color: #000000 !important;
+  background-color: #18181b !important;
+  scrollbar-width:auto;
 }
+
 
 .accordion-button:focus{
   box-shadow: none !important;
@@ -50,4 +52,26 @@ body{
   color:rgb(173, 181, 189) !important;
   background-color: #212529 !important;
   box-shadow: none !important;
+}
+
+/*Custom Scrollbar, Problema, non supportato da IE e Firefox*/
+::-webkit-scrollbar {
+  background-color: #212529;
+  width: 16px;
+  border-radius: 16px;
+}
+
+::-webkit-scrollbar-track {/*Questo è lo sfondo della scrollbar*/
+  background-color: #212529;
+  border-radius: 16px;
+}
+
+::-webkit-scrollbar-thumb {/*Questa è la scrollbar stessa*/
+  background-color: #6c757d;
+  border-radius: 16px;
+  border: 4px solid #212529;
+}
+
+::-webkit-scrollbar-button {/*Per rimuovere i bottoni dalla barra*/
+  display:none;
 }

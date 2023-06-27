@@ -140,7 +140,6 @@ export default function Home({ loggedUser, setLoggedUser }) {
             <Offcanvas className="ps-5 rounded-4" show={friendMenu} onHide={() => { setFriendMenu(false) }} unmountOnExit data-bs-theme="dark">
                 <FriendMenu requests={loggedUser.requests} friendMenu={friendMenu}/>
             </Offcanvas>
-
         </> : ''
     )
 }
