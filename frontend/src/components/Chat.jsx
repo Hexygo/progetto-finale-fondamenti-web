@@ -64,11 +64,11 @@ export default function Chat({user, otherUser}){
                         <div>{/*Questo div permette al contenuto di non venire rovesciato*/}
                             {conversation?conversation.map((el,index,thearray)=>{
                                 if(index===0){
-                                    return <><div className="lead text-center border-bottom mb-4">{new Date(el.time).toLocaleDateString()}</div><Message key={el.time} user={user} el={el}/></>
+                                    return <><Row className="sticky-top lead pt-2 mb-4"><Col className="bg-dark rounded-pill d-flex justify-content-center p-0" md={{span:2,offset:5}} ><div className="px-3">{new Date(el.time).toLocaleDateString()}</div></Col></Row><Message key={el.time} user={user} el={el}/></>
                                 }
                                 else{
                                     return new Date(thearray[index].time).toLocaleDateString()!=new Date(thearray[index-1].time).toLocaleDateString() ?
-                                      <><div className="lead text-center border-bottom mb-4">{new Date(el.time).toLocaleDateString()}</div><Message key={el.time} user={user} el={el}/></> :
+                                      <><Row className="sticky-top lead pt-2 mb-4"><Col className="bg-dark rounded-pill d-flex justify-content-center p-0" md={{span:2,offset:5}} ><div className="px-3">{new Date(el.time).toLocaleDateString()}</div></Col></Row><Message key={el.time} user={user} el={el}/></> :
                                       <Message key={el.time} user={user} el={el}/>
                                 }
                                 }):''/*TODO:Creare il componente Message*/}
