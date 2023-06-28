@@ -12,6 +12,7 @@ import Offcanvas from 'react-bootstrap/Offcanvas'
 import axiosInstance from "../axios"
 import { useNavigate } from "react-router-dom"
 import FriendMenu from "../components/FriendMenu"
+import ChatPlaceholder from "../components/ChatPlaceholder"
 
 
 export default function Home({ loggedUser, setLoggedUser }) {
@@ -126,7 +127,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
                         <FriendList users={users} setFriendSelected={setFriendSelected} />
                     </Col>
                     <Col xs='9'>
-                        {otherUser ? <Chat user={loggedUser} otherUser={otherUser} /> : 'Seleziona un utente per iniziare a chattare'}
+                        {otherUser ? <Chat user={loggedUser} otherUser={otherUser} /> : <ChatPlaceholder/>}
                     </Col>
                 </Row>
             </Container>
