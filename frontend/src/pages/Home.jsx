@@ -89,7 +89,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
 
         socket.on('friend request accepted',(request)=>{
             setRequests(requests.filter(r=>r._id!==request.user._id))
-            setFriends([...friends, request])
+            setFriends([...friends, request.user])
         })
 
         socket.on('friend request rejected',(request)=>{
@@ -123,7 +123,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
                         <SideBar handleLogout={handleLogout} friendMenu={friendMenu} setFriendMenu={setFriendMenu} />
                     </Col>
                     <Col>
-                        <FriendList users={users} setFriendSelected={setFriendSelected} />
+                        <FriendList friends={friends} onlineUsers={users} setFriendSelected={setFriendSelected} />
                     </Col>
                     <Col xs='9'>
                         {otherUser ? <Chat user={loggedUser} otherUser={otherUser} /> : <ChatPlaceholder/>}

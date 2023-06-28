@@ -59,6 +59,7 @@ module.exports = {
         //Errore da lanciare in caso la richiesta sia stata già inviata
         const AlreadySentError = {};
         const PendingRequest = {};
+        const AlreadyFriendError = {};
         //Cerco l'utente sul DB
         User.findById(req.body.receiver).exec().then((receiver) => {
             if (receiver) {
@@ -66,6 +67,10 @@ module.exports = {
                 //Controllo che non ci sia già una richiesta di amicizia in attesa
                 User.findById(req.body.sender).exec().then((sender) => {
                     try {
+                        sender.friends.forEach(el => {
+                            if (el._id == receiver._id)
+                                throw (AlreadyFriendError);
+                        });
                         sender.requests.forEach(el => {
                             if (el == req.body.receiver)
                                 throw (PendingRequest);
@@ -89,6 +94,9 @@ module.exports = {
                             receiver.save();
                             sender.save();
                             res.status(200).send("ACCEPTED");
+                        }
+                        if (err === AlreadyFriendError) {
+                            res.status(409).send('Già amico');
                         }
                         if (err === AlreadySentError)
                             res.status(403).send("Richiesta di amicizia già inviata");

@@ -30,7 +30,6 @@ export default function FriendRequest({ request, currentUser, acceptCallback, re
     }
 
     const handleReject=()=>{
-        console.log(currentUser._id, 'sta rifiutando la richiesta di', request._id)
         axiosInstance({
             method:'post',
             url:'http://localhost:3000/api/users/refuse',

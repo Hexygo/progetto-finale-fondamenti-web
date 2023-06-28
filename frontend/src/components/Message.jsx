@@ -12,7 +12,7 @@ export default function Message({user, el}){
                             {el.content}                                
                         </Card.Text> 
                         <Card.Text className='mb-0 text-end'>            
-                            <small>{new Date(el.time).toLocaleTimeString('it-IT').substring(0,5)}</small>
+                            <small>{new Date(el.time).toLocaleTimeString(navigator.language, {hour:'2-digit',minute:'2-digit'} ).substring(0,5)}</small>
                         </Card.Text>                       
                     </Card.Body>
                 </Card>

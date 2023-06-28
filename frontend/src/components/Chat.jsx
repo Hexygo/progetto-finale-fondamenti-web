@@ -58,9 +58,9 @@ export default function Chat({user, otherUser}){
 
     return(
             <Container className="vh-100 position-relative pt-4" >
-                <Row className="justify-content-center display-6 rounded-top border" style={{height:'50px', fontFamily:'Roboto Condensed, sans-serif'}}>{otherUser.user.username}</Row>
+                <Row className="justify-content-center display-6 rounded-top border" style={{height:'50px', fontFamily:'Roboto Condensed, sans-serif'}}>{otherUser.username}</Row>
                 <Row>
-                    <Container id="chat-container" className="overflow-y-auto d-flex flex-column-reverse border rounded-bottom" style={{height:'80vh'}/*RICORDA DI CAMBIARE QUESTO VALORE SE VARIANO LE DIMENSIONI DELLA BARRA PER INVIARE UN MESSAGGIO E DELLO USERNAME*/}>
+                    <Container id="chat-container" className="overflow-y-auto d-flex flex-column-reverse border rounded-bottom" style={{height:'80vh'}}>
                         <div>{/*Questo div permette al contenuto di non venire rovesciato*/}
                             {conversation?conversation.map((el,index,thearray)=>{
                                 if(index===0){
@@ -71,7 +71,7 @@ export default function Chat({user, otherUser}){
                                       <><Row className="sticky-top lead pt-2 mb-4"><Col className="bg-dark rounded-pill d-flex justify-content-center p-0" md={{span:2,offset:5}} ><div className="px-3" style={{fontFamily:'Roboto Condensed, sans-serif'}}>{new Date(el.time).toLocaleDateString()}</div></Col></Row><Message key={el.time} user={user} el={el}/></> :
                                       <Message key={el.time} user={user} el={el}/>
                                 }
-                                }):''/*TODO:Creare il componente Message*/}
+                                }):''}
                         </div>
                     </Container>
                 </Row>
