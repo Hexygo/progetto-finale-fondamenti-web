@@ -16,6 +16,8 @@ router.get('/all', usersController.getAllUsers);
 router.get('/username/:username', usersController.getUserByUsername);
 //Endpoint "addFriend" dell'API "users", accetta richieste POST
 router.post('/addFriend', usersController.addFriend);
+//Endpoint "removeFriend" dell'API "users", accetta richieste POST
+router.post('/removeFriend', usersController.removeFriend);
 //Endpoint "accept" dell'API "users", accetta richieste POST
 router.post('/accept', usersController.acceptRequest);
 //Endpoint "refuse" dell'API "users", accetta richieste POST

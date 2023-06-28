@@ -109,6 +109,31 @@ module.exports = {
             }
         });
     },
+    //Rimuove un utente dalla lista amici dell'utente che effettua la richiesta
+    //PARAMETRI: user(id utente che emette la richiesta), friend(id amico da rimuovere)
+    removeFriend: (req, res) => {
+        User.findById(req.body.user).exec().then((user) => __awaiter(this, void 0, void 0, function* () {
+            //Controllo che l'amico da rimuovere sia nella lista amici
+            const FriendFound = {};
+            try {
+                user.friends.forEach(el => {
+                    if (el.toString() === req.body.friend)
+                        throw FriendFound;
+                });
+                res.status(404).end();
+            }
+            catch (error) {
+                if (error === FriendFound) {
+                    const friend = yield User.findById(req.body.friend).exec();
+                    user.friends = user.friends.filter(f => f.toString() !== friend._id.toString());
+                    friend.friends = friend.friends.filter(f => f.toString() !== user._id.toString());
+                    user.save();
+                    friend.save();
+                    res.status(200).end();
+                }
+            }
+        }));
+    },
     //Accetta la richiesta di amicizia
     acceptRequest: (req, res) => __awaiter(this, void 0, void 0, function* () {
         //Cerca l'utente che deve accettare le richieste
