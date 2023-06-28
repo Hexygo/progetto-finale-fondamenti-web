@@ -88,15 +88,14 @@ export default function Home({ loggedUser, setLoggedUser }) {
         })
 
         socket.on('friend request accepted',(request)=>{
-            console.log(request)
             setRequests(requests.filter(r=>r._id!==request.user._id))
             setFriends([...friends, request])
         })
 
         socket.on('friend request rejected',(request)=>{
-            console.log(request)
             setRequests(requests.filter(r=>r._id!==request.user._id))
         })
+        
         socket.connect()
     }, [loggedUser])
 
@@ -132,7 +131,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
                 </Row>
             </Container>
             <Offcanvas className="ps-5 rounded-4" show={friendMenu} onHide={() => { setFriendMenu(false) }} unmountOnExit data-bs-theme="dark">
-                <FriendMenu requests={requests} friendMenu={friendMenu} currentUser={loggedUser} />
+                <FriendMenu requests={requests} friendMenu={friendMenu} currentUser={loggedUser} setFriends={setFriends} setRequests={setRequests} friends={friends}/>
             </Offcanvas>
         </> : ''
     )

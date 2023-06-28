@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row";
 import axiosInstance from "../axios";
 import socket from "../socket";
 
-export default function FriendRequest({ request, currentUser, setRequests, setFriends }) {
+export default function FriendRequest({ request, currentUser, acceptCallback, rejectCallback }) {
     let active = false;//Introdotto per mantenere una animazione del pulsante, come feedback all'utente
 
     const handleAccept=()=>{
@@ -26,7 +26,7 @@ export default function FriendRequest({ request, currentUser, setRequests, setFr
                 to:request._id
             })
         })
-        
+        acceptCallback(request)
     }
 
     const handleReject=()=>{
@@ -39,11 +39,11 @@ export default function FriendRequest({ request, currentUser, setRequests, setFr
                 sender:request._id
             }
         }).then(data=>{
-            //setRequests(requests.filter(r=>))
             socket.emit('friend request rejected',{
                 user:currentUser,
                 to:request._id
             })
+            rejectCallback(request)
         })
     }
 
