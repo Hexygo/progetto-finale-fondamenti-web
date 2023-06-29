@@ -3,9 +3,10 @@ import Friend from './Friend'
 
 import ListGroup from 'react-bootstrap/ListGroup'
 import SearchBar from "./SearchBar";
+import socket from "../socket";
 
 
-export default function FriendList({friends, onlineUsers, friendSelected, setFriendSelected }){
+export default function FriendList({friends, onlineUsers, friendSelected, setFriendSelected, removeFriend }){
     const [search, setSearch]=useState('')//Variabile di stato della ricerca nella lista amici
     const [filteredUsers, setFilteredUsers]=useState(friends)//Lista amici filtrata tramite la ricerca
     
@@ -13,30 +14,24 @@ export default function FriendList({friends, onlineUsers, friendSelected, setFri
         setFilteredUsers(friends.filter(el=>el.username.toLowerCase().includes(search.toLowerCase())))
     }, [search, friends])
 
-    const sortOnlineFirst=(a,b)=>{//Permette agli utenti online di comparire alla cima della lista
-        let aOn, bOn=false
-        onlineUsers.forEach(userSocket=>{
-            if(userSocket.userID===a._id && userSocket.connected)
-                aOn=true
-            if(userSocket.userID===b._id && userSocket.connected)
-                bOn=true
-        })
-        return aOn===bOn? 0 : aOn ? -1:1
-    }
+    useEffect(()=>{
+        console.log(onlineUsers)
+        setFilteredUsers(filteredUsers.map((el=>{
+            onlineUsers.forEach((ou=>{
+                if(ou.userID===el._id)
+                    el.connected=ou.connected
+            }))
+            return el
+        })))
+    }, [onlineUsers])
 
     return (
         <ListGroup as='ul' variant="flush" className="sticky-top">
             <SearchBar search={search} setSearch={setSearch} submitHandler={()=>{return}}/>
             {filteredUsers.length !==0 ?
-                <ListGroup as='ul' variant="flush" className="rounded">
-                    {filteredUsers.sort(sortOnlineFirst).map(user=>{
-                        let connected=false;
-                        onlineUsers.forEach(userSocket=>{
-                            if(userSocket.userID===user._id && userSocket.connected){
-                                connected=true
-                            }
-                        })
-                        return <Friend key={user.userID} user={user} setFriendSelected={setFriendSelected} connected={connected} friendSelected={friendSelected}/>})/*Compone la lista di amici*/}
+                <ListGroup as='ul' variant="flush" className="rounded overflow-y-auto" style={{height:'80vh'}}>
+                    {filteredUsers.map(user=>{
+                        return <Friend key={user._id} user={user} setFriendSelected={setFriendSelected} friendSelected={friendSelected} connected={user.connected} removeFriend={removeFriend}/>})/*Compone la lista di amici*/}
                 </ListGroup>:
                 friends.length!==0 ? 
                     'Nessun amico trovato.':

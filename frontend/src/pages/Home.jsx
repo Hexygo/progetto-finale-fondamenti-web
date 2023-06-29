@@ -50,25 +50,28 @@ export default function Home({ loggedUser, setLoggedUser }) {
     }, [])
 
     useEffect(() => {
-        socket.on('users', (users) => {//Evento emesso dal server, che comunica tutti gli utenti collegati in un dato momento
-            users.forEach(user => {
-                user.self = user.userID === socket.userID
+        socket.on('users', (serverUsers) => {//Evento emesso dal server, che comunica tutti gli utenti collegati al momento del login
+            serverUsers.forEach(user => {
+                user.self = user.user._id === socket.userID
                 user.connected = true
             })
-            setUsers(users)
+            setUsers([...users, ...serverUsers])
         })
 
         socket.on('user connected', (connectedUser) => {//Evento emesso dal server quando un utente si connnette
             let found = false
             setUsers(users.map(user => {
-                if (user.userID === connectedUser.userID) {
+                if (user.user._id === connectedUser.user._id) {
+                    console.log('ho trovato l utente')
                     found = true
                     user.self = false
                     user.connected = true
                 }
                 return user
             }))
+            console.log(users)
             if (!found) {
+                console.log('non ho trovato l utente')
                 connectedUser.self = false
                 connectedUser.connected = true
                 setUsers([...users, connectedUser])
@@ -76,9 +79,12 @@ export default function Home({ loggedUser, setLoggedUser }) {
         })
 
         socket.on('user disconnected', disconnectedUser => {
+            console.log(users)
             setUsers(users.map(user => {
-                if (user.userID === disconnectedUser)
+                if (user.user._id === disconnectedUser){
+                    console.log('ho trovato l utente')
                     user.connected = false
+                }
                 return user
             }))
         })
@@ -95,9 +101,13 @@ export default function Home({ loggedUser, setLoggedUser }) {
         socket.on('friend request rejected',(request)=>{
             setRequests(requests.filter(r=>r._id!==request.user._id))
         })
+
+        socket.on('friend removed', (friend)=>{
+            setFriends(friends.filter(f=>f._id!==friend))
+        })
         
         socket.connect()
-    }, [loggedUser])
+    }, [friends, loggedUser, requests, users])
 
     useEffect(() => {
         setOtherUser(friendSelected)
@@ -115,6 +125,23 @@ export default function Home({ loggedUser, setLoggedUser }) {
         })
     }
 
+    const removeFriend=(friend)=>{
+        axiosInstance({
+            method:'post',
+            url:'http://localhost:3000/api/users/removeFriend',
+            data:{
+                user:loggedUser._id,
+                friend
+            }
+        }).then(()=>{
+            socket.emit('friend removed', {
+                loggedUser, 
+                friend
+            })
+            setFriends(friends.filter(f=>f._id!==friend))
+        })
+    }
+
     return (
         logged ? <>
             <Container fluid className="vh-100">
@@ -123,7 +150,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
                         <SideBar handleLogout={handleLogout} friendMenu={friendMenu} setFriendMenu={setFriendMenu} />
                     </Col>
                     <Col>
-                        <FriendList friends={friends} onlineUsers={users} friendSelected={friendSelected} setFriendSelected={setFriendSelected} />
+                        <FriendList friends={friends} onlineUsers={users} friendSelected={friendSelected} setFriendSelected={setFriendSelected} removeFriend={removeFriend}/>
                     </Col>
                     <Col xs='9'>
                         {otherUser ? <Chat user={loggedUser} otherUser={otherUser} /> : <ChatPlaceholder/>}

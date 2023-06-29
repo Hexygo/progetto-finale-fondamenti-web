@@ -99,6 +99,12 @@ io.on("connection", (socket) => {
             to
         });
     });
+    socket.on('friend removed', ({ user, friend }) => {
+        socket.to(friend).to(socket.userID).emit('friend removed', {
+            from: socket.userID,
+            to: friend
+        });
+    });
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
         const matchingSockets = yield io.in(socket.userID).allSockets();
         const isDisconnected = matchingSockets.size === 0;

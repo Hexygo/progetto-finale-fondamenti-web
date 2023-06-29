@@ -103,6 +103,13 @@ io.on("connection", (socket) => {
         })
     })
 
+    socket.on('friend removed', ({user, friend})=>{
+        socket.to(friend).to(socket.userID).emit('friend removed', {
+            from:socket.userID,
+            to:friend
+        })
+    })
+
     socket.on('disconnect', async()=>{//reazione alla disconnessione di un utente, avvisa tutti gli utenti che [socket] si è disconnesso
         const matchingSockets= await io.in(socket.userID).allSockets()
         const isDisconnected=matchingSockets.size===0
@@ -116,7 +123,9 @@ io.on("connection", (socket) => {
         sessionID:socket.sessionID,
         userID:socket.userID
     })
+
     socket.emit("users", users);
+    
     socket.broadcast.emit('user connected', {//Avvisa tutti gli utenti che [socket] si è connesso
         userID:socket.userID,
         user:socket.user
