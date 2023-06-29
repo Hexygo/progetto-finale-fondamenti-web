@@ -42,7 +42,7 @@ export default function Chat({user, otherUser}){
         }).then(data=>{
             socket.emit('message', {
                 message:data.data,
-                to:otherUser.userID
+                to:otherUser._id
             })
             setConversation([...conversation, data.data])
             setMessage('')
@@ -50,7 +50,7 @@ export default function Chat({user, otherUser}){
     }
 
     socket.on('message',({message, from})=>{//Riceve un messaggio dal socket FROM, con contenuto message, la logica senza socket va ancora definita
-        if(otherUser.userID===from)
+        if(otherUser._id===from)
             setConversation([...conversation, message])
         else
             console.log('messaggio da ', from)//notifica di messsaggio da parte di x

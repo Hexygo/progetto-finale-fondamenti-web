@@ -18,7 +18,7 @@ import ChatPlaceholder from "../components/ChatPlaceholder"
 export default function Home({ loggedUser, setLoggedUser }) {
     const [users, setUsers] = useState([])
     const [otherUser, setOtherUser] = useState()
-    const [friendSelected, setFriendSelected] = useState()//contiene il socket, che a sua volta contiene l'utente in friendSelected.user
+    const [friendSelected, setFriendSelected] = useState()
     const navigate = useNavigate()
     const [friendMenu, setFriendMenu] = useState()
     const [logged, setLogged] = useState(false)
@@ -123,7 +123,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
                         <SideBar handleLogout={handleLogout} friendMenu={friendMenu} setFriendMenu={setFriendMenu} />
                     </Col>
                     <Col>
-                        <FriendList friends={friends} onlineUsers={users} setFriendSelected={setFriendSelected} />
+                        <FriendList friends={friends} onlineUsers={users} friendSelected={friendSelected} setFriendSelected={setFriendSelected} />
                     </Col>
                     <Col xs='9'>
                         {otherUser ? <Chat user={loggedUser} otherUser={otherUser} /> : <ChatPlaceholder/>}
