@@ -13,6 +13,7 @@ export default function SearchBar({ search, setSearch, submitHandler }) {
     const handleSubmit=(e)=>{
         e.preventDefault()
         submitHandler(search)
+        setSearch('')
     }
 
     return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FriendRequest from './FriendRequest'
 
 import Offcanvas from "react-bootstrap/Offcanvas"
@@ -11,20 +11,46 @@ import Modal from 'react-bootstrap/Modal';
 
 export default function FriendMenu({ requests, friendMenu, currentUser, setRequests, setFriends, friends }) {
     const [search, setSearch] = useState('')
+    const [selfRequest, setSelfRequest]=useState(false)
+    const [requestSent, setRequestSent]=useState(false)
+    const [userNotFound, setUserNotFound]=useState(false)
     const [modal1, setModal1] = useState(false)
     const [modal2, setModal2] = useState(false)
+    const [modal3, setModal3] = useState(false)
+
+    useEffect(()=>{
+        setTimeout(()=>{
+            setRequestSent(false)
+        }, 3000)
+    }, [requestSent])
+
+    useEffect(()=>{
+        setTimeout(()=>{
+            setUserNotFound(false)
+        }, 3000)
+    }, [userNotFound])
+
+    useEffect(()=>{
+        setTimeout(()=>{
+            setSelfRequest(false)
+        }, 3000)
+    }, [selfRequest])
 
     const submitHandler=(receiver)=>{
         axiosInstance({
             method:'get',
             url:'http://localhost:3000/api/users/username/'+receiver
         }).then((data)=>{
+            if(currentUser._id===data.data._id){
+                setSelfRequest(true)
+                return
+            }
             if(friends.map(e=>e._id).includes(data.data._id)){//Richiesta d'amicizia da annullare, poiché i due utenti sono già amici
-                setModal2(true)
+                setModal1(true)
                 return
             }
             if(requests.map(e=>e._id).includes(data.data._id)){//Richiesta d'amicizia pending trovata
-                setModal1(true)
+                setModal3(true)
                 return
             }
             const rec=data.data._id
@@ -40,6 +66,7 @@ export default function FriendMenu({ requests, friendMenu, currentUser, setReque
                     sender:{_id:currentUser._id, username:currentUser.username},
                     receiver:rec
                 })
+                setRequestSent(true)
             }).catch((err)=>{
                 switch (err.response.status) {
                     case 403://Richiesta di amicizia già inviata
@@ -54,7 +81,7 @@ export default function FriendMenu({ requests, friendMenu, currentUser, setReque
         }).catch((err)=>{
             switch (err.response.status) {
                 case 404:
-                    console.error('utente inesistente')
+                    setUserNotFound(true)
                     break;
             
                 default:
@@ -80,7 +107,10 @@ export default function FriendMenu({ requests, friendMenu, currentUser, setReque
                 <ListGroup variant="flush">
                     <ListGroup.Item className="text-center">
                         <div className="h3" style={{fontFamily:'Roboto Condensed, sans-serif'}}>Aggiungi un Amico</div>
-                        <SearchBar search={search} setSearch={setSearch} submitHandler={submitHandler}/>
+                        <SearchBar key=""search={search} setSearch={setSearch} submitHandler={submitHandler}/>
+                        {requestSent ? <label className="form-text text-success">Richiesta inviata con successo.</label>:''}
+                        {userNotFound ? <label className="form-text text-danger">L'utente non esiste.</label>:''}
+                        {selfRequest ? <label className="form-text text-danger">Non puoi mandare una richiesta di amicizia a te stesso.</label>:''}
                     </ListGroup.Item>
                     <ListGroup.Item>
                         <Accordion data-bs-theme="dark" flush >
@@ -96,22 +126,33 @@ export default function FriendMenu({ requests, friendMenu, currentUser, setReque
                     </ListGroup.Item>
                 </ListGroup>
             </Offcanvas.Body>
-            <Modal centered show={modal1} onHide={function(){setModal1(false)}}> 
-                    <Modal.Header >
-                        <Modal.Title>L'utente è già tuo amico</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        Stai cercando di inviare una richiesta di amicizia ad un utente già nella tua lista amici!
-                    </Modal.Body>
-                </Modal>
-                <Modal centered show={modal2} onHide={function(){setModal2(false)}}> 
-                    <Modal.Header >
-                        <Modal.Title>Richiesta già inviata</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        Hai già inviato una richiesta di amicizia all'utente, bisogna attendere che la richiesta venga accettata o rifiutata!
-                    </Modal.Body>
-                </Modal>
+
+            <Modal centered show={modal1} onHide={()=>{setModal1(false)}}> 
+                <Modal.Header >
+                    <Modal.Title>L'utente è già tuo amico</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Stai cercando di inviare una richiesta di amicizia ad un utente già nella tua lista amici!
+                </Modal.Body>
+            </Modal>
+                
+            <Modal centered show={modal2} onHide={()=>{setModal2(false)}}> 
+                <Modal.Header >
+                    <Modal.Title>Richiesta già inviata</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Hai già inviato una richiesta di amicizia all'utente, bisogna attendere che la richiesta venga accettata o rifiutata!
+                </Modal.Body>
+            </Modal>
+
+            <Modal centered show={modal3} onHide={()=>{setModal3(false)}}> 
+                <Modal.Header >
+                    <Modal.Title>Richiesta d'amicizia in attesa</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Questo utente ti ha già inviato una richiesta d'amicizia, accettala dal menu sottostante.
+                </Modal.Body>
+            </Modal>
         </>
     )
 }
