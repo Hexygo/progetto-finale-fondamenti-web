@@ -10,17 +10,19 @@ export default function FriendList({friends, onlineUsers, friendSelected, setFri
     const [filteredUsers, setFilteredUsers]=useState(friends)//Lista amici filtrata tramite la ricerca
     
     useEffect(()=>{//Filtra gli amici
-        setFilteredUsers(filteredUsers.filter(el=>el.username.toLowerCase().includes(search.toLowerCase())))
+        setFilteredUsers(friends.filter(el=>el.username.toLowerCase().includes(search.toLowerCase())))
     }, [search])
 
     useEffect(()=>{
-        setFilteredUsers(filteredUsers.map((el=>{
+        console.log(friends, onlineUsers, filteredUsers)
+        setFilteredUsers(friends.map((el=>{
             onlineUsers.forEach((ou=>{
                 if(ou.userID===el._id)
                     el.connected=ou.connected
             }))
             return el
         })))
+        console.log(filteredUsers)
     }, [onlineUsers, friends])
 
     useEffect(()=>{
