@@ -27,7 +27,6 @@ export default function Home({ loggedUser, setLoggedUser }) {
 
     useEffect(() => {
         const session = localStorage.getItem('sessionID')
-        console.log(session)
         if (!session) {
             navigate('/')
             return
@@ -40,7 +39,6 @@ export default function Home({ loggedUser, setLoggedUser }) {
                     setCookie: { "session_token": session }
                 }
             })
-            console.log(data)
             setLoggedUser(data.data)
             setRequests(data.data.requests)
             setFriends(data.data.friends)
@@ -62,16 +60,13 @@ export default function Home({ loggedUser, setLoggedUser }) {
             let found = false
             setUsers(users.map(user => {
                 if (user.user._id === connectedUser.user._id) {
-                    console.log('ho trovato l utente')
                     found = true
                     user.self = false
                     user.connected = true
                 }
                 return user
             }))
-            console.log(users)
             if (!found) {
-                console.log('non ho trovato l utente')
                 connectedUser.self = false
                 connectedUser.connected = true
                 setUsers([...users, connectedUser])
@@ -79,7 +74,6 @@ export default function Home({ loggedUser, setLoggedUser }) {
         })
 
         socket.on('user disconnected', disconnectedUser => {
-            console.log(users)
             setUsers(users.map(user => {
                 if (user.user._id === disconnectedUser){
                     console.log('ho trovato l utente')
@@ -95,7 +89,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
 
         socket.on('friend request accepted',(request)=>{
             setRequests(requests.filter(r=>r._id!==request.user._id))
-            setFriends([...friends, request.user])
+            setFriends([...friends, {_id:request.user._id, username:request.user.username }])
         })
 
         socket.on('friend request rejected',(request)=>{
@@ -103,7 +97,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
         })
 
         socket.on('friend removed', (friend)=>{
-            setFriends(friends.filter(f=>f._id!==friend))
+            setFriends(friends.filter(f=>f._id!==friend.from))
         })
         
         socket.connect()

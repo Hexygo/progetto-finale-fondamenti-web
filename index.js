@@ -79,28 +79,28 @@ io.on("connection", (socket) => {
         });
     });
     socket.on('friend request', ({ sender, receiver }) => {
-        socket.to(receiver).to(socket.userID).emit('friend request', {
+        socket.to(receiver).emit('friend request', {
             from: socket.userID,
             sender,
             to: receiver
         });
     });
     socket.on('friend request accepted', ({ user, to }) => {
-        socket.to(to).to(socket.userID).emit('friend request accepted', {
+        socket.to(to).emit('friend request accepted', {
             from: socket.userID,
             user,
             to
         });
     });
     socket.on('friend request rejected', ({ user, to }) => {
-        socket.to(to).to(socket.userID).emit('friend request rejected', {
+        socket.to(to).emit('friend request rejected', {
             from: socket.userID,
             user,
             to
         });
     });
     socket.on('friend removed', ({ user, friend }) => {
-        socket.to(friend).to(socket.userID).emit('friend removed', {
+        socket.to(friend).emit('friend removed', {
             from: socket.userID,
             to: friend
         });

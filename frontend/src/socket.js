@@ -18,7 +18,6 @@ socket.on('session', ({sessionID, userID})=>{
     .find((row) => row.startsWith("session_token="))
     ?.split("=")[1]
   socket.auth={sessionID:cookieToken}
-  console.log(cookieToken)
   localStorage.setItem('sessionID', cookieToken)//Archivia in locale la sessione
   socket.userID=userID
 })

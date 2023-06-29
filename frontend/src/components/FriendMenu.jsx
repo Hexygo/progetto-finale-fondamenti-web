@@ -101,7 +101,7 @@ export default function FriendMenu({ requests, friendMenu, currentUser, setReque
 
     return (//Conterrà il menu con le richieste di amicizia in attesa, e la barra per inviare ricerche di amicizia
         <>
-            <Offcanvas.Header className="justify-content-end sticky-top" closeButton closeVariant={friendMenu?'':"white"}/>{/*Valutare se fare il close button a mano per poterlo far sparire quando viene cliccato*/}
+            <Offcanvas.Header className="justify-content-end sticky-top" closeButton/>{/*Valutare se fare il close button a mano per poterlo far sparire quando viene cliccato*/}
 
             <Offcanvas.Body>
                 <ListGroup variant="flush">

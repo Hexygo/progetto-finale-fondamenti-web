@@ -3,7 +3,6 @@ import Friend from './Friend'
 
 import ListGroup from 'react-bootstrap/ListGroup'
 import SearchBar from "./SearchBar";
-import socket from "../socket";
 
 
 export default function FriendList({friends, onlineUsers, friendSelected, setFriendSelected, removeFriend }){
@@ -11,11 +10,10 @@ export default function FriendList({friends, onlineUsers, friendSelected, setFri
     const [filteredUsers, setFilteredUsers]=useState(friends)//Lista amici filtrata tramite la ricerca
     
     useEffect(()=>{//Filtra gli amici
-        setFilteredUsers(friends.filter(el=>el.username.toLowerCase().includes(search.toLowerCase())))
-    }, [search, friends])
+        setFilteredUsers(filteredUsers.filter(el=>el.username.toLowerCase().includes(search.toLowerCase())))
+    }, [search])
 
     useEffect(()=>{
-        console.log(onlineUsers)
         setFilteredUsers(filteredUsers.map((el=>{
             onlineUsers.forEach((ou=>{
                 if(ou.userID===el._id)
@@ -23,7 +21,11 @@ export default function FriendList({friends, onlineUsers, friendSelected, setFri
             }))
             return el
         })))
-    }, [onlineUsers])
+    }, [onlineUsers, friends])
+
+    useEffect(()=>{
+        setFilteredUsers([...friends])
+    }, [friends])
 
     return (
         <ListGroup as='ul' variant="flush" className="sticky-top">

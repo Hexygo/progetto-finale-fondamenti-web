@@ -19,9 +19,6 @@ export default function Friend({ user, setFriendSelected, connected, friendSelec
         setFriendSelected(user)
     }
 
-    //Aggiungere pulsante per rimuovere amico
-    //Aggiungere badge di notifica, con numero di messaggi non letti da parte dell'utente
-
     return (
         <>
         <ListGroup.Item variant='dark' action href={user._id} as='li' eventKey={user._id} onClick={handleClick} onMouseEnter={()=>{setShowButton(true); setColor('#343a40')}} onMouseLeave={()=>{setShowButton(false);setColor('#1a1d20')}}>
@@ -53,7 +50,10 @@ export default function Friend({ user, setFriendSelected, connected, friendSelec
                     <div>Sicuro di voler rimuovere <b>{user.username}</b> dalla lista amici?</div>
                 </Row>
                 <Row className='d-flex flex-nowrap justify-content-center'>
-                        <Button variant='danger' style={{width:'fit-content'}} className='mx-3' onClick={()=>{removeFriend(user._id); setFriendSelected(undefined)}}>
+                        <Button variant='danger' style={{width:'fit-content'}} className='mx-3' onClick={()=>{
+                            removeFriend(user._id); 
+                            setFriendSelected(undefined);
+                            setShowModal(false)}}>
                             Conferma
                         </Button>
                         <Button variant='secondary' style={{width:'fit-content'}} className='mx-3' onClick={()=>setShowModal(false)}>

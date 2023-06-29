@@ -12,7 +12,6 @@ export default function FriendRequest({ request, currentUser, acceptCallback, re
     let active = false;//Introdotto per mantenere una animazione del pulsante, come feedback all'utente
 
     const handleAccept=()=>{
-        console.log(currentUser._id, 'sta accettando la richiesta di', request._id)
         axiosInstance({
             method:'post',
             url:'http://localhost:3000/api/users/accept',

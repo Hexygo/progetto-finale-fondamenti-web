@@ -14,7 +14,6 @@ export default function Chat({user, otherUser}){
     const [conversation, setConversation]=useState([])
 
     useEffect(()=>{
-        console.log('user',user,'otherUser', otherUser)
         axiosInstance({
             method:'post',
             url:'http://localhost:3000/api/messages/conversation',
@@ -22,7 +21,6 @@ export default function Chat({user, otherUser}){
                 user:user._id,
                 otherUser:(otherUser.user?otherUser.user._id:otherUser._id)}
         }).then(data=>{
-            console.log(data)
             setConversation(data.data)
         })
     },[otherUser, user])
@@ -64,11 +62,11 @@ export default function Chat({user, otherUser}){
                         <div>{/*Questo div permette al contenuto di non venire rovesciato*/}
                             {conversation?conversation.map((el,index,thearray)=>{
                                 if(index===0){
-                                    return <><Row className="sticky-top lead pt-2 mb-4"><Col className="bg-dark rounded-pill d-flex justify-content-center p-0" md={{span:2,offset:5}} ><div className="px-3" style={{fontFamily:'Roboto Condensed, sans-serif'}}>{new Date(el.time).toLocaleDateString()}</div></Col></Row><Message key={el.time} user={user} el={el}/></>
+                                    return <><Row className="sticky-top lead pt-2 mb-4"><Col className="bg-dark rounded-pill d-flex justify-content-center p-0" md={{span:2,offset:5}} ><div key={new Date(el.time).toLocaleDateString()} className="px-3" style={{fontFamily:'Roboto Condensed, sans-serif'}}>{new Date(el.time).toLocaleDateString()}</div></Col></Row><Message key={el.time} user={user} el={el}/></>
                                 }
                                 else{
                                     return new Date(thearray[index].time).toLocaleDateString()!==new Date(thearray[index-1].time).toLocaleDateString() ?
-                                      <><Row className="sticky-top lead pt-2 mb-4"><Col className="bg-dark rounded-pill d-flex justify-content-center p-0" md={{span:2,offset:5}} ><div className="px-3" style={{fontFamily:'Roboto Condensed, sans-serif'}}>{new Date(el.time).toLocaleDateString()}</div></Col></Row><Message key={el.time} user={user} el={el}/></> :
+                                      <><Row className="sticky-top lead pt-2 mb-4"><Col className="bg-dark rounded-pill d-flex justify-content-center p-0" md={{span:2,offset:5}} ><div key={new Date(el.time).toLocaleDateString()} className="px-3" style={{fontFamily:'Roboto Condensed, sans-serif'}}>{new Date(el.time).toLocaleDateString()}</div></Col></Row><Message key={el.time} user={user} el={el}/></> :
                                       <Message key={el.time} user={user} el={el}/>
                                 }
                                 }):''}
