@@ -14,7 +14,6 @@ export default function FriendList({friends, onlineUsers, friendSelected, setFri
     }, [search])
 
     useEffect(()=>{
-        console.log(friends, onlineUsers, filteredUsers)
         setFilteredUsers(friends.map((el=>{
             onlineUsers.forEach((ou=>{
                 if(ou.userID===el._id)
@@ -22,7 +21,6 @@ export default function FriendList({friends, onlineUsers, friendSelected, setFri
             }))
             return el
         })))
-        console.log(filteredUsers)
     }, [onlineUsers, friends])
 
     useEffect(()=>{
