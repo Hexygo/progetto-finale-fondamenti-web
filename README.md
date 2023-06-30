@@ -7,8 +7,8 @@ PigeComm è il progetto finale di Colia Giuseppe e Ciccolella Giuseppe per l'esa
 1. [Introduzione](#introduzione)
    * [Backend](#backend)
    * [Frontend](#frontend)
-2. [Guida all'Installazione](#guida-all'installazione)
-3. [Guida all'uso](#guida-all'uso)
+2. [Guida all'Installazione](#guida-allinstallazione)
+3. [Guida all'uso](#guida-alluso)
 4. [Ringraziamenti](#ringraziamenti)
 
 ## Introduzione
