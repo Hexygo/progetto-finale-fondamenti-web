@@ -66,18 +66,9 @@ export default function Chat({ user, otherUser, messageQueue, setMessageQueue })
                         setMessageQueue([...temp])
                     }, 5000)
                 }
-            } else {
-                let temp = messageQueue
-                temp.push(message)
-                setMessageQueue([...temp])
-                setTimeout(() => {
-                    let temp = messageQueue
-                    temp.shift()
-                    setMessageQueue([...temp])
-                }, 5000)
             }
         })
-    }, [])
+    }, [otherUser, messageQueue])
 
     return (
         <Container className="vh-100 position-relative pt-4" >

@@ -134,6 +134,19 @@ export default function Home({ loggedUser, setLoggedUser }) {
         socket.once('friend removed', (friend)=>{
             setFriends(friends.filter(f=>f._id!==friend.from))
         })
+
+        socket.once('message', ({message, from})=>{
+            if(!otherUser){
+                let temp = messageQueue
+                temp.push(message)
+                setMessageQueue([...temp])
+                setTimeout(() => {
+                    let temp = messageQueue
+                    temp.shift()
+                    setMessageQueue([...temp])
+                }, 5000)
+            }
+        })
         
         socket.connect()
     }, [friends, loggedUser, requests, users])
