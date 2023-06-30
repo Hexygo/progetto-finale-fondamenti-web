@@ -135,7 +135,7 @@ export default function Home({ loggedUser, setLoggedUser }) {
             setFriends(friends.filter(f=>f._id!==friend.from))
         })
 
-        socket.once('message', ({message, from})=>{
+        socket.on('message', ({message, from})=>{
             if(!otherUser){
                 let temp = messageQueue
                 temp.push(message)

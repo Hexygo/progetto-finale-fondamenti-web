@@ -103,7 +103,9 @@ export default function Chat({ user, otherUser, messageQueue, setMessageQueue })
                 <Row className="border rounded d-flex justify-content-center align-items-center" style={{ height: 'calc(80vh + 50px)' }} >
                     <div className="text-center">
                         <figure className="figure">
-                            <img className="figure-img img-fluid" src="/waiting.png" alt="Pigeon delivering a letter" style={{ width: '50%' }} />
+                            <picture>
+                                <img id="chat-logo" className="img-fluid" src="/waiting-S.png" alt="Pigeon delivering a letter" />
+                            </picture>
                             <figcaption>
                                 <p className="display-3" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>PigeComm</p>
                                 <blockquote className="blockquote">
