@@ -51,8 +51,8 @@ export default function Chat({ user, otherUser, messageQueue, setMessageQueue })
     }
 
     useEffect(() => {
-        socket.on('message', ({ message, from }) => {//Riceve un messaggio dal socket FROM, con contenuto message
-            console.log('otheruser',otherUser)
+        socket.removeAllListeners('message')
+        socket.once('message', ({ message, from }) => {//Riceve un messaggio dal socket FROM, con contenuto message
             if (otherUser) {
                 if (otherUser._id === from)
                     setConversation([...conversation, message])
@@ -67,7 +67,6 @@ export default function Chat({ user, otherUser, messageQueue, setMessageQueue })
                     }, 5000)
                 }
             } else {
-                console.log('sono qui')
                 let temp = messageQueue
                 temp.push(message)
                 setMessageQueue([...temp])
@@ -77,9 +76,8 @@ export default function Chat({ user, otherUser, messageQueue, setMessageQueue })
                     setMessageQueue([...temp])
                 }, 5000)
             }
-
         })
-    })
+    }, [])
 
     return (
         <Container className="vh-100 position-relative pt-4" >
