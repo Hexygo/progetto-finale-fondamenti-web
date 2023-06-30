@@ -31,7 +31,7 @@ export default function SignupForm({setLoggedUser}){
         if (username!=='' && password!=='' && cpassword!=='') {
             axiosInstance({
                 method:'post',
-                url:'http://localhost:3000/api/users/register',
+                url:'/api/users/register',
                 data:{
                     username:username,
                     password:sha256(password)

@@ -20,6 +20,8 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 const User = require('../models/User');
 const Session = require('../models/Session');
+const A_DAY = 24 * 60 * 60 * 1000;
+const A_WEEK = 7 * A_DAY;
 module.exports = {
     //Restituisce come risposta in formato JSON tutti gli utenti
     getAllUsers: (req, res) => {
@@ -45,7 +47,7 @@ module.exports = {
             else {
                 //Caso in cui l'utente esiste, lo aggiunge al database, e ritorna una risposta con l'utente appena registrato nel DB
                 User.create({ username: req.body.username, password: req.body.password, friends: [], requests: [] }).then((user) => {
-                    Session.create({ user_id: user._id, expires: Date.now() + 12 * 60 * 60 * 1000 }).then(cookie => {
+                    Session.create({ user_id: user._id, expires: Date.now() + A_DAY }).then(cookie => {
                         res.cookie('session_token', cookie._id.toString(), { expires: cookie.expires });
                         const _a = user._doc, { ['password']: password } = _a, rest = __rest(_a, ['password']);
                         return res.status(200).send(rest);
@@ -165,21 +167,24 @@ module.exports = {
                 return res.status(404).send("NOT_FOUND"); //L'utente non esiste sul DB
             }
             if (user.password == req.body.password) { //Controllo la password
-                //Utente loggato
-                Session.findOne({ user_id: user._id }).then(session => {
-                    if (session) {
+                Session.findOne({ user_id: user._id.toString() }).then((session) => __awaiter(this, void 0, void 0, function* () {
+                    if (session) { //La sessione esiste
+                        if (session.expires <= Date.now()) { //La sessione è scaduta, viene refreshata per un giorno
+                            session.expires = Date.now() + A_DAY;
+                            session.save();
+                        }
                         res.cookie('session_token', session._id.toString(), { expires: session.expires });
                         const _a = user._doc, { ['password']: password } = _a, rest = __rest(_a, ['password']);
                         return res.status(200).send(rest);
                     }
-                    else {
-                        Session.create({ user_id: user._id, expires: Date.now() + 12 * 60 * 60 * 1000 }).then(cookie => {
+                    else { //La sessione non esiste => la crea
+                        Session.create({ user_id: user._id, expires: Date.now() + A_DAY }).then(cookie => {
                             res.cookie('session_token', cookie._id.toString(), { expires: cookie.expires });
                             const _a = user._doc, { ['password']: password } = _a, rest = __rest(_a, ['password']);
                             return res.status(200).send(rest); //Per maggiore sicurezza, immagino vada mandato un cookie
                         });
                     }
-                });
+                }));
             }
             else
                 return res.status(403).send("UNAUTHORIZED"); //Password errata     
@@ -193,13 +198,19 @@ module.exports = {
         });
     },
     cookiesMiddleware: (req, res, next) => {
-        if (!req.cookies) { //La richiesta non ha cookie, automaticamente respinta
-            console.log('niente cookie');
+        if (!req.cookies['session_token']) { //La richiesta non ha il cookie della sessione, automaticamente respinta
             return res.status(401).end();
         }
         Session.findById(req.cookies['session_token']).exec().then(session => {
-            if (session) //cookie valido
+            if (session) { //cookie valido
+                if (session.expires <= Date.now()) {
+                    Session.findByIdAndDelete(session._id).exec().then(data => {
+                        res.cookie('session_token', 'invalid', { expires: new Date });
+                        return res.status(401).end();
+                    });
+                }
                 next();
+            }
             else
                 return res.status(401).end(); //cookie non valido
         });

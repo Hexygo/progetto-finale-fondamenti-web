@@ -9,7 +9,7 @@ import axiosInstance from "../axios";
 import socket from "../socket";
 import Modal from 'react-bootstrap/Modal';
 
-export default function FriendMenu({ requests, friendMenu, currentUser, setRequests, setFriends, friends }) {
+export default function FriendMenu({ requests, friendMenu, currentUser, setRequests, setFriends, friends, setInvalidSession }) {
     const [search, setSearch] = useState('')
     const [selfRequest, setSelfRequest]=useState(false)
     const [requestSent, setRequestSent]=useState(false)
@@ -39,7 +39,7 @@ export default function FriendMenu({ requests, friendMenu, currentUser, setReque
     const submitHandler=(receiver)=>{
         axiosInstance({
             method:'get',
-            url:'http://localhost:3000/api/users/username/'+receiver
+            url:'/api/users/username/'+receiver
         }).then((data)=>{
             if(currentUser._id===data.data._id){
                 setSelfRequest(true)
@@ -56,7 +56,7 @@ export default function FriendMenu({ requests, friendMenu, currentUser, setReque
             const rec=data.data._id
             axiosInstance({
                 method:'post',
-                url:'http://localhost:3000/api/users/addFriend',
+                url:'/api/users/addFriend',
                 data:{
                     sender:currentUser._id,
                     receiver:rec
@@ -69,8 +69,12 @@ export default function FriendMenu({ requests, friendMenu, currentUser, setReque
                 setRequestSent(true)
             }).catch((err)=>{
                 switch (err.response.status) {
+                    case 401://Sessione scaduta
+                        setInvalidSession(true)
+                        break;
+
                     case 403://Richiesta di amicizia già inviata
-                        setModal2(true)//Mandare un messaggio di errore all'utente
+                        setModal2(true)
                         break;
                 
                     default:
@@ -80,11 +84,16 @@ export default function FriendMenu({ requests, friendMenu, currentUser, setReque
             })
         }).catch((err)=>{
             switch (err.response.status) {
+                case 401://Sessione Scaduta
+                    setInvalidSession(true)
+                    break;
+
                 case 404:
                     setUserNotFound(true)
                     break;
             
                 default:
+                    console.error('errore interno al server')
                     break;
             }
         })

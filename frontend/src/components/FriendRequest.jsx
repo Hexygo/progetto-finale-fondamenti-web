@@ -8,13 +8,13 @@ import Row from "react-bootstrap/Row";
 import axiosInstance from "../axios";
 import socket from "../socket";
 
-export default function FriendRequest({ request, currentUser, acceptCallback, rejectCallback }) {
+export default function FriendRequest({ request, currentUser, acceptCallback, rejectCallback, setInvalidSession }) {
     let active = false;//Introdotto per mantenere una animazione del pulsante, come feedback all'utente
 
     const handleAccept=()=>{
         axiosInstance({
             method:'post',
-            url:'http://localhost:3000/api/users/accept',
+            url:'/api/users/accept',
             data:{
                 user:currentUser._id,
                 sender:request._id
@@ -24,14 +24,24 @@ export default function FriendRequest({ request, currentUser, acceptCallback, re
                 user:currentUser,
                 to:request._id
             })
+            acceptCallback(request)
+        }).catch(err=>{
+            switch (err) {
+                case 401:
+                    setInvalidSession(true)
+                    break;
+            
+                default:
+                    console.error('errore interno al sistema')
+                    break;
+            }
         })
-        acceptCallback(request)
     }
 
     const handleReject=()=>{
         axiosInstance({
             method:'post',
-            url:'http://localhost:3000/api/users/refuse',
+            url:'/api/users/refuse',
             data:{
                 user:currentUser._id,
                 sender:request._id
@@ -42,6 +52,16 @@ export default function FriendRequest({ request, currentUser, acceptCallback, re
                 to:request._id
             })
             rejectCallback(request)
+        }).catch(err=>{
+            switch (err) {
+                case 401:
+                    setInvalidSession(true)
+                    break;
+            
+                default:
+                    console.error('errore interno al sistema')
+                    break;
+            }
         })
     }
 

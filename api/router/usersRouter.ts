@@ -10,6 +10,8 @@ router.post('/login', usersController.login)
 //Usare PUT?
 router.post('/register', usersController.register)
 
+router.post('/logout', usersController.logout)
+
 router.use(usersController.cookiesMiddleware)
 
 router.get('/', (req, res)=>res.status(200).send('Root endpoint for the Users API.'))
@@ -31,8 +33,6 @@ router.post('/accept', usersController.acceptRequest)
 
 //Endpoint "refuse" dell'API "users", accetta richieste POST
 router.post('/refuse', usersController.refuseRequest)
-
-router.post('/logout', usersController.logout)
 
 router.get('/usersession', usersController.getUserFromSession)
 

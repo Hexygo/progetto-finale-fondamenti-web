@@ -1,29 +1,44 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+
 import socket from "../socket";
 import axiosInstance from '../axios'
+
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/Container";
+import Modal from 'react-bootstrap/Modal'
+
 import Message from "./Message";
 
-export default function Chat({ user, otherUser, messageQueue, setMessageQueue }) {
+export default function Chat({ user, otherUser, messageQueue, setMessageQueue, setInvalidSession }) {
     const [message, setMessage] = useState('')
     const [conversation, setConversation] = useState([])
+
+    const [errorDialog,setErrorDialog]=useState(false)
 
     useEffect(() => {
         if(otherUser){
             axiosInstance({
                 method: 'post',
-                url: 'http://localhost:3000/api/messages/conversation',
+                url: '/api/messages/conversation',
                 data: {
                     user: user._id,
                     otherUser: (otherUser.user ? otherUser.user._id : otherUser._id)
                 }
             }).then(data => {
                 setConversation(data.data)
+            }).catch(err=>{
+                switch (err) {
+                    case 401://Sessione scaduta
+                        setInvalidSession(true)
+                        break;
+                
+                    default:
+                        break;
+                }
             })
         }
     }, [otherUser, user])
@@ -33,7 +48,7 @@ export default function Chat({ user, otherUser, messageQueue, setMessageQueue })
 
         axiosInstance({
             method: 'post',
-            url: 'http://localhost:3000/api/messages/send',
+            url: '/api/messages/send',
             data: {
                 sender: user._id,
                 receiver: (otherUser.user ? otherUser.user._id : otherUser._id),
@@ -47,15 +62,21 @@ export default function Chat({ user, otherUser, messageQueue, setMessageQueue })
             })
             setConversation([...conversation, data.data])
             setMessage('')
+        }).catch((err)=>{
+            setErrorDialog(true)
+            setMessage('')
         })
     }
 
     useEffect(() => {
         socket.removeAllListeners('message')
-        socket.once('message', ({ message, from }) => {//Riceve un messaggio dal socket FROM, con contenuto message
+        socket.on('message', ({ message, from }) => {//Riceve un messaggio dal socket FROM, con contenuto message
             if (otherUser) {
-                if (otherUser._id === from)
-                    setConversation([...conversation, message])
+                if (otherUser._id === from){
+                    let temp=conversation
+                    temp.push(message)
+                    setConversation([...temp])
+                }
                 else {//notifica di messsaggio da parte di x
                     let temp = messageQueue
                     temp.push(message)
@@ -66,11 +87,21 @@ export default function Chat({ user, otherUser, messageQueue, setMessageQueue })
                         setMessageQueue([...temp])
                     }, 5000)
                 }
+            }else{
+                let temp = messageQueue
+                    temp.push(message)
+                    setMessageQueue([...temp])
+                    setTimeout(() => {
+                        let temp = messageQueue
+                        temp.shift()
+                        setMessageQueue([...temp])
+                    }, 5000)
             }
         })
-    }, [otherUser, messageQueue])
+    }, [otherUser, messageQueue, conversation])
 
     return (
+        <>
         <Container className="vh-100 position-relative pt-4" >
             {otherUser ?
                 <>
@@ -117,7 +148,15 @@ export default function Chat({ user, otherUser, messageQueue, setMessageQueue })
                 </Row>
             }
         </Container>
-
+        <Modal show={errorDialog} onHide={()=>{setErrorDialog(false)}}>
+            <Modal.Header>
+                Errore nell'invio del messaggio
+            </Modal.Header>
+            <Modal.Body>
+                Probabilmente tu e l'utente non siete amici.
+            </Modal.Body>
+        </Modal>
+        </>
 
     )
 }

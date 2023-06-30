@@ -21,6 +21,7 @@ const app = express();
 const port = 3000;
 const FRONTEND = ['http://localhost:3001'];
 const Session = require('./api/models/Session');
+const path = require('path');
 //Connessione al DB
 mongoose_1.default.connect(`mongodb+srv://admin:${password}@cluster0.fpbbv1a.mongodb.net/provafinale`);
 const db = mongoose_1.default.connection;
@@ -29,13 +30,13 @@ db.once('open', () => {
 });
 //TODO:Assicurarsi di non far esplodere tutto mandando richieste vuote, provare con try...catch?
 app.use(cors({ origin: 'http://localhost:3001', credentials: true }));
-app.use('/', express.static('frontend/build'));
-//Endpoint per il frontend
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/frontend/build/index.html');
-});
+app.use('/', express.static(path.join(__dirname, 'frontend/build')));
 //Endpoint del backend
 app.use('/api', apiRouter);
+//Endpoint per il frontend
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/frontend/build/index.html'));
+});
 //Messa in ascolto della API sulla porta ${port}
 const io = require('socket.io')(app.listen(port, () => console.log('App is listening on port', port)), {
     cors: { origin: FRONTEND }
@@ -46,9 +47,11 @@ io.use((socket, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (sessionID) {
         const session = yield Session.findById(sessionID).populate({ path: 'user_id', select: '-password' });
         if (session) {
+            session.connected = true;
             socket.sessionID = session._id.toString();
             socket.userID = session.user_id._id.toString();
             socket.user = session.user_id;
+            session.save();
             return next();
         }
     }

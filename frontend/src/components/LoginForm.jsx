@@ -26,7 +26,7 @@ export default function LoginForm({setLoggedUser}){
         e.preventDefault()
         axiosInstance({
             method:'post',
-            url:'http://localhost:3000/api/users/login',
+            url:'/api/users/login',
             data:{
                 username:username,
                 password:sha256(password)
