@@ -11,5 +11,7 @@ COPY . /app
 RUN npm install
 RUN npm run build
 
+EXPOSE 3000
+
 # Define the entry point for the container
 CMD ["npm", "start"]
