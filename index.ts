@@ -24,7 +24,7 @@ db.once('open', ()=>{
 
 app.use(cors({origin:'http://localhost:3001', credentials:true}))
 
-app.use('/', express.static(path.join(__dirname,'frontend/build')))
+app.use('/', express.static(path.join(__dirname,'../frontend/build')))
 
 
 //Endpoint del backend
@@ -32,7 +32,7 @@ app.use('/api', apiRouter)
 
 //Endpoint per il frontend
 app.get('/*', (req, res)=>{
-    res.sendFile(path.join(__dirname+'/frontend/build/index.html'))
+    res.sendFile(path.join(__dirname+'../frontend/build/index.html'))
 });
 
 
